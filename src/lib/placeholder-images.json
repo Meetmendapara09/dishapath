@@ -41,6 +41,30 @@
       "description": "Campus of Regional Vocational College.",
       "imageUrl": "https://picsum.photos/seed/204/600/400",
       "imageHint": "college building"
+    },
+    {
+      "id": "scholarship-1",
+      "description": "Government building for scholarship provider.",
+      "imageUrl": "https://picsum.photos/seed/301/600/400",
+      "imageHint": "government building"
+    },
+    {
+      "id": "scholarship-2",
+      "description": "University library for scholarship page.",
+      "imageUrl": "https://picsum.photos/seed/302/600/400",
+      "imageHint": "university library"
+    },
+    {
+      "id": "scholarship-3",
+      "description": "Female student for scholarship for girls.",
+      "imageUrl": "https://picsum.photos/seed/303/600/400",
+      "imageHint": "female student"
+    },
+    {
+      "id": "scholarship-4",
+      "description": "Modern technology for Digital India scholarship.",
+      "imageUrl": "https://picsum.photos/seed/304/600/400",
+      "imageHint": "modern technology"
     }
   ]
 }

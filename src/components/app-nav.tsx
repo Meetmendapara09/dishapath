@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Lightbulb, BookOpen, Building } from 'lucide-react';
+import { Home, Lightbulb, BookOpen, Building, Trophy, ClipboardEdit } from 'lucide-react';
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 
 const navItems = [
@@ -10,6 +10,8 @@ const navItems = [
   { href: '/quiz', label: 'Aptitude Quiz', icon: Lightbulb, tooltip: 'Aptitude Quiz' },
   { href: '/careers', label: 'Explore Careers', icon: BookOpen, tooltip: 'Explore Careers' },
   { href: '/colleges', label: 'Find Colleges', icon: Building, tooltip: 'Find Colleges' },
+  { href: '/scholarships', label: 'Scholarships', icon: Trophy, tooltip: 'Scholarships' },
+  { href: '/exams', label: 'Exams', icon: ClipboardEdit, tooltip: 'Exams' },
 ];
 
 export function AppNav() {
