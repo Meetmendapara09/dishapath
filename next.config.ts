@@ -34,3 +34,8 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+    ],
+  },
+};
+
+export default withPWA(nextConfig);
