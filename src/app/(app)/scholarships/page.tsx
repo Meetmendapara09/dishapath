@@ -1,9 +1,9 @@
 // src/app/(app)/scholarships/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
-import { collection, getDocs, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,7 @@ interface Scholarship {
 export default function ScholarshipsPage() {
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     async function fetchScholarships() {
@@ -42,6 +43,20 @@ export default function ScholarshipsPage() {
     }
     fetchScholarships();
   }, []);
+
+  const filteredScholarships = useMemo(() => {
+    if (!searchQuery) {
+      return scholarships;
+    }
+    return scholarships.filter(scholarship => {
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        scholarship.name.toLowerCase().includes(searchLower) ||
+        scholarship.provider.toLowerCase().includes(searchLower) ||
+        scholarship.eligibility.some(e => e.toLowerCase().includes(searchLower))
+      );
+    });
+  }, [searchQuery, scholarships]);
 
   const getImage = (id: string) => {
     return PlaceHolderImages.find(img => img.id === id) ?? { imageUrl: '', imageHint: '' };
@@ -64,7 +79,12 @@ export default function ScholarshipsPage() {
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input placeholder="Search by name, provider, or eligibility..." className="pl-10" />
+        <Input 
+          placeholder="Search by name, provider, or eligibility..." 
+          className="pl-10"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)} 
+        />
       </div>
       
       {scholarships.length === 0 ? (
@@ -74,9 +94,16 @@ export default function ScholarshipsPage() {
             <CardDescription>Please add scholarship information to the 'scholarships' collection in Firestore.</CardDescription>
           </CardHeader>
         </Card>
+      ) : filteredScholarships.length === 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>No Scholarships Found for "{searchQuery}"</CardTitle>
+            <CardDescription>Try a different search term.</CardDescription>
+          </CardHeader>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {scholarships.map((scholarship) => {
+          {filteredScholarships.map((scholarship) => {
             const { imageUrl, imageHint } = getImage(scholarship.imageUrlId);
             return (
               <Card key={scholarship.id} className="flex flex-col">
