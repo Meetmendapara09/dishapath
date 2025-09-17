@@ -17,6 +17,7 @@ interface Exam {
   subjects: string[];
   website: string;
   tentativeDate: string;
+  level: 'After 12th' | 'After 10th';
 }
 
 // Sample data to display since the database is empty
@@ -24,18 +25,29 @@ const sampleExams: Exam[] = [
     {
         id: 'jee-main',
         name: 'JEE Main',
-        purpose: 'Engineering Entrance',
+        purpose: 'Engineering Entrance (NITs, IIITs)',
         subjects: ['Physics', 'Chemistry', 'Mathematics'],
         website: 'https://jeemain.nta.nic.in/',
-        tentativeDate: 'January & April'
+        tentativeDate: 'January & April',
+        level: 'After 12th'
+    },
+    {
+        id: 'jee-advanced',
+        name: 'JEE Advanced',
+        purpose: 'Engineering Entrance (IITs)',
+        subjects: ['Physics', 'Chemistry', 'Mathematics'],
+        website: 'https://jeeadv.ac.in/',
+        tentativeDate: 'May - June',
+        level: 'After 12th'
     },
     {
         id: 'neet',
         name: 'NEET (UG)',
-        purpose: 'Medical Entrance',
+        purpose: 'Medical Entrance (MBBS, BDS)',
         subjects: ['Physics', 'Chemistry', 'Biology'],
         website: 'https://neet.nta.nic.in/',
-        tentativeDate: 'May'
+        tentativeDate: 'May',
+        level: 'After 12th'
     },
     {
         id: 'cuet',
@@ -43,15 +55,80 @@ const sampleExams: Exam[] = [
         purpose: 'Central University Entrance',
         subjects: ['Varies by Course'],
         website: 'https://cuet.samarth.ac.in/',
-        tentativeDate: 'May - June'
+        tentativeDate: 'May - June',
+        level: 'After 12th'
+    },
+     {
+        id: 'bitsat',
+        name: 'BITSAT',
+        purpose: 'Engineering Entrance (BITS Pilani)',
+        subjects: ['Physics', 'Chemistry', 'Maths', 'English', 'Logical Reasoning'],
+        website: 'https://www.bitsadmission.com/',
+        tentativeDate: 'May & June',
+        level: 'After 12th'
     },
     {
         id: 'clat',
         name: 'CLAT',
-        purpose: 'Law Entrance',
+        purpose: 'Law Entrance (NLUs)',
         subjects: ['English', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques', 'Current Affairs'],
         website: 'https://consortiumofnlus.ac.in/',
-        tentativeDate: 'December'
+        tentativeDate: 'December',
+        level: 'After 12th'
+    },
+    {
+        id: 'nest',
+        name: 'NEST',
+        purpose: 'Science Entrance (NISER, CEBS)',
+        subjects: ['Biology', 'Chemistry', 'Mathematics', 'Physics'],
+        website: 'https://www.nestexam.in/',
+        tentativeDate: 'June',
+        level: 'After 12th'
+    },
+    {
+        id: 'iiser-iat',
+        name: 'IISER Aptitude Test (IAT)',
+        purpose: 'Science Entrance (IISERs)',
+        subjects: ['Physics', 'Chemistry', 'Maths', 'Biology'],
+        website: 'https://www.iiseradmission.in/',
+        tentativeDate: 'June',
+        level: 'After 12th'
+    },
+     {
+        id: 'isi',
+        name: 'ISI Admission Test',
+        purpose: 'Statistics & Mathematics (ISI)',
+        subjects: ['Mathematics', 'Statistics'],
+        website: 'https://www.isical.ac.in/~admission/',
+        tentativeDate: 'May',
+        level: 'After 12th'
+    },
+     {
+        id: 'viteee',
+        name: 'VITEEE',
+        purpose: 'Engineering Entrance (VIT)',
+        subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Aptitude'],
+        website: 'https://viteee.vit.ac.in/',
+        tentativeDate: 'April',
+        level: 'After 12th'
+    },
+    {
+        id: 'ntse',
+        name: 'NTSE',
+        purpose: 'Scholarship Exam for Science Talent',
+        subjects: ['Mental Ability', 'Scholastic Aptitude (Maths, Science, Social Science)'],
+        website: 'https://ncert.nic.in/ntse.php',
+        tentativeDate: 'On Hold',
+        level: 'After 10th'
+    },
+    {
+        id: 'kvy',
+        name: 'KVPY (Discontinued, Merged with INSPIRE)',
+        purpose: 'Fellowship in Basic Sciences',
+        subjects: ['Physics', 'Chemistry', 'Maths', 'Biology'],
+        website: 'http://www.kvpy.iisc.ernet.in/',
+        tentativeDate: 'Discontinued',
+        level: 'After 12th'
     }
 ];
 
@@ -91,7 +168,7 @@ export default function ExamsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold">Entrance Exams</h1>
-        <p className="text-muted-foreground">Information on key entrance exams for after 12th grade.</p>
+        <p className="text-muted-foreground">Information on key entrance exams for after 10th and 12th grade.</p>
       </div>
 
       {exams.length === 0 ? (
@@ -106,7 +183,10 @@ export default function ExamsPage() {
           {exams.map((exam) => (
             <Card key={exam.id}>
               <CardHeader>
-                <CardTitle>{exam.name}</CardTitle>
+                <div className="flex justify-between items-start">
+                    <CardTitle>{exam.name}</CardTitle>
+                    <Badge variant={exam.level === 'After 10th' ? 'destructive' : 'default'}>{exam.level}</Badge>
+                </div>
                 <CardDescription className="flex items-center gap-2 pt-1"><Target className="h-4 w-4" /> {exam.purpose}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
