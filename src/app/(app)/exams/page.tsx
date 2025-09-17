@@ -1,14 +1,15 @@
 // src/app/(app)/exams/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { collection, getDocs, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Book, Calendar, Target, Loader2, PenSquare, Scale, Palette, Utensils, Tv } from "lucide-react";
+import { ArrowRight, Book, Calendar, Target, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface Exam {
   id: string;
@@ -18,6 +19,7 @@ interface Exam {
   website: string;
   tentativeDate: string;
   level: 'After 12th' | 'After 10th';
+  field: string;
 }
 
 // Sample data to display since the database is empty
@@ -29,7 +31,8 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Mathematics'],
         website: 'https://jeemain.nta.nic.in/',
         tentativeDate: 'January & April',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Engineering'
     },
     {
         id: 'jee-advanced',
@@ -38,7 +41,8 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Mathematics'],
         website: 'https://jeeadv.ac.in/',
         tentativeDate: 'May - June',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Engineering'
     },
     {
         id: 'neet',
@@ -47,16 +51,18 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Biology'],
         website: 'https://neet.nta.nic.in/',
         tentativeDate: 'May',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Medical'
     },
-    {
+     {
         id: 'cuet',
         name: 'CUET (UG)',
         purpose: 'Central, State, & Private University Entrance',
         subjects: ['Varies by Course & University'],
         website: 'https://cuet.samarth.ac.in/',
         tentativeDate: 'May - June',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'General'
     },
     {
         id: 'clat',
@@ -65,7 +71,8 @@ const sampleExams: Exam[] = [
         subjects: ['English', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques', 'Current Affairs'],
         website: 'https://consortiumofnlus.ac.in/',
         tentativeDate: 'December',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Law'
     },
     {
         id: 'nchmct-jee',
@@ -74,7 +81,8 @@ const sampleExams: Exam[] = [
         subjects: ['Numerical Ability', 'Aptitude', 'Reasoning', 'English', 'General Knowledge'],
         website: 'https://nchmjee.nta.nic.in/',
         tentativeDate: 'May',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Hospitality'
     },
     {
         id: 'nid-dat',
@@ -83,7 +91,8 @@ const sampleExams: Exam[] = [
         subjects: ['Creative Ability Test', 'Studio Test'],
         website: 'https://admissions.nid.edu/',
         tentativeDate: 'December - January',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Design'
     },
     {
         id: 'nift',
@@ -92,7 +101,8 @@ const sampleExams: Exam[] = [
         subjects: ['Creative Ability', 'General Ability', 'Situation Test'],
         website: 'https://www.nift.ac.in/admission',
         tentativeDate: 'February',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Design'
     },
     {
         id: 'uceed',
@@ -101,7 +111,8 @@ const sampleExams: Exam[] = [
         subjects: ['Visualization', 'Observation', 'Design thinking', 'Logical Reasoning'],
         website: 'https://www.uceed.iitb.ac.in/',
         tentativeDate: 'January',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Design'
     },
     {
         id: 'ca-foundation',
@@ -110,7 +121,8 @@ const sampleExams: Exam[] = [
         subjects: ['Accounting', 'Business Laws', 'Mathematics & Statistics', 'Business Economics'],
         website: 'https://www.icai.org/',
         tentativeDate: 'May & November',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Commerce'
     },
     {
         id: 'iiser-iat',
@@ -119,7 +131,8 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Maths', 'Biology'],
         website: 'https://www.iiseradmission.in/',
         tentativeDate: 'June',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Science'
     },
     {
         id: 'nest',
@@ -128,7 +141,8 @@ const sampleExams: Exam[] = [
         subjects: ['Biology', 'Chemistry', 'Mathematics', 'Physics'],
         website: 'https://www.nestexam.in/',
         tentativeDate: 'June',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Science'
     },
     {
         id: 'bitsat',
@@ -137,7 +151,8 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Logical Reasoning'],
         website: 'https://www.bitsadmission.com/',
         tentativeDate: 'May & June',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Engineering'
     },
     {
         id: 'viteee',
@@ -146,7 +161,8 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Aptitude'],
         website: 'https://viteee.vit.ac.in/',
         tentativeDate: 'April',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Engineering'
     },
     {
         id: 'srmjee',
@@ -155,7 +171,8 @@ const sampleExams: Exam[] = [
         subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Aptitude'],
         website: 'https://www.srmist.edu.in/admission-india/',
         tentativeDate: 'April, June, July',
-        level: 'After 12th'
+        level: 'After 12th',
+        field: 'Engineering'
     },
     {
         id: 'ntse',
@@ -164,14 +181,19 @@ const sampleExams: Exam[] = [
         subjects: ['Mental Ability', 'Scholastic Aptitude (Maths, Science, Social Science)'],
         website: 'https://ncert.nic.in/ntse.php',
         tentativeDate: 'On Hold',
-        level: 'After 10th'
+        level: 'After 10th',
+        field: 'General'
     },
 ];
 
+const examFields = ['All', ...Array.from(new Set(sampleExams.map(e => e.field)))];
 
 export default function ExamsPage() {
   const [exams, setExams] = useState<Exam[]>(sampleExams);
   const [loading, setLoading] = useState(false);
+  const [levelFilter, setLevelFilter] = useState('All');
+  const [fieldFilter, setFieldFilter] = useState('All');
+
 
   /*
   // This code will fetch from Firestore. Uncomment it when you have data in the 'exams' collection.
@@ -191,6 +213,15 @@ export default function ExamsPage() {
     fetchExams();
   }, []);
   */
+  
+  const filteredExams = useMemo(() => {
+    return exams.filter(exam => {
+        const levelMatch = levelFilter === 'All' || exam.level === levelFilter;
+        const fieldMatch = fieldFilter === 'All' || exam.field === fieldFilter;
+        return levelMatch && fieldMatch;
+    });
+  }, [exams, levelFilter, fieldFilter]);
+
 
   if (loading) {
     return (
@@ -207,16 +238,35 @@ export default function ExamsPage() {
         <p className="text-muted-foreground">Information on key entrance exams for after 10th and 12th grade.</p>
       </div>
 
-      {exams.length === 0 ? (
+       <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+             <Tabs value={levelFilter} onValueChange={setLevelFilter} className="w-full sm:w-auto">
+                <TabsList>
+                    <TabsTrigger value="All">All Levels</TabsTrigger>
+                    <TabsTrigger value="After 12th">After 12th</TabsTrigger>
+                    <TabsTrigger value="After 10th">After 10th</TabsTrigger>
+                </TabsList>
+            </Tabs>
+        </div>
+         <Tabs value={fieldFilter} onValueChange={setFieldFilter} className="w-full">
+            <TabsList className="flex flex-wrap h-auto">
+                {examFields.map(field => (
+                    <TabsTrigger key={field} value={field}>{field}</TabsTrigger>
+                ))}
+            </TabsList>
+        </Tabs>
+      </div>
+
+      {filteredExams.length === 0 ? (
         <Card>
           <CardHeader>
             <CardTitle>No Exams Found</CardTitle>
-            <CardDescription>Please add exam information to the 'exams' collection in Firestore.</CardDescription>
+            <CardDescription>Your current filter selection returned no results. Try a different filter.</CardDescription>
           </CardHeader>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {exams.map((exam) => (
+          {filteredExams.map((exam) => (
             <Card key={exam.id}>
               <CardHeader>
                 <div className="flex justify-between items-start">
