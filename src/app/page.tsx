@@ -245,15 +245,40 @@ export default function LandingPage() {
       </main>
 
       <footer className="bg-background border-t">
-        <div className="container mx-auto px-4 md:px-6 py-6 flex flex-col md:flex-row justify-between items-center text-sm text-foreground/60">
-            <Logo />
-            <div className="flex gap-4 mt-4 md:mt-0">
-                <Link href="#features" className="hover:text-primary">Features</Link>
-                <Link href="/login" className="hover:text-primary">Login</Link>
+        <div className="container mx-auto px-4 md:px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-4">
+              <Logo />
+              <p className="text-sm text-foreground/60">&copy; {new Date().getFullYear()} Disha Path. All rights reserved.</p>
             </div>
-            <p className="mt-4 md:mt-0">&copy; {new Date().getFullYear()} Disha Path. All rights reserved.</p>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground">Navigate</h4>
+              <ul className="space-y-2 text-sm text-foreground/80">
+                <li><Link href="/" className="hover:text-primary">Home</Link></li>
+                <li><Link href="#features" className="hover:text-primary">Features</Link></li>
+                <li><Link href="/login" className="hover:text-primary">Login</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground">Resources</h4>
+              <ul className="space-y-2 text-sm text-foreground/80">
+                <li><Link href="/careers" className="hover:text-primary">Explore Careers</Link></li>
+                <li><Link href="/colleges" className="hover:text-primary">Find Colleges</Link></li>
+                <li><Link href="/scholarships" className="hover:text-primary">Scholarships</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground">Legal</h4>
+              <ul className="space-y-2 text-sm text-foreground/80">
+                <li><Link href="#" className="hover:text-primary">Privacy Policy</Link></li>
+                <li><Link href="#" className="hover:text-primary">Terms of Service</Link></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
   );
 }
+
+    
