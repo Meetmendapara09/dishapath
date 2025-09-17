@@ -148,7 +148,7 @@ export function PersonalizedRecsForm({ onRecommendationGenerated }: { onRecommen
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select class" />
-                      </Trigger>
+                      </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="10th">10th</SelectItem>
