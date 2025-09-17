@@ -153,14 +153,9 @@ const prompt = ai.definePrompt({
   - If they ask about exams, use the \`findExams\` tool.
   - Mention specific pages on the platform like "Explore Careers" or "Find Colleges" when relevant.
 
-  Here is the conversation history:
+  Here is the conversation history (role 'model' is you, role 'user' is the student):
   {{#each history}}
-    {{#if (eq role 'user')}}From User:
-    - {{#each content}}{{text}}{{/each}}
-    {{/if}}
-    {{#if (eq role 'model')}}From You:
-    - {{#each content}}{{text}}{{/each}}
-    {{/if}}
+  **{{role}}**: {{#each content}}{{text}}{{/each}}
   {{/each}}
 
   Now, here is the new message from the user:
