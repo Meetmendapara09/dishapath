@@ -36,6 +36,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { dev, isServer }) => {
+    // Used by Turbopack to identify webpack configuration.
+    // @ts-ignore
+    config.name = 'webpack';
+    return config;
+  },
 };
 
 export default withPWA(nextConfig);

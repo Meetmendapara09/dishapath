@@ -1,42 +1,60 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper function to check if a user is logged in
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // Helper function to check if the user is the owner of the document
     function isOwner(userId) {
       return request.auth.uid == userId;
     }
-    
-    // Helper function to check if the user has an 'admin' role
+
     function isAdmin() {
-      // Check for the existence of the user document and the role field before accessing it.
-      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // Publicly readable collections
-    match /{publicCollection}/{docId} where publicCollection in ['careers', 'colleges', 'exams', 'scholarships', 'studyMaterials'] {
-      allow read: if true;
-      allow write: if false; // Read-only for clients
-    }
-
-    // Admins can list all users. This is needed for the admin dashboard.
     match /users/{userId} {
-       allow list: if isSignedIn() && isAdmin();
-       allow read, update, create: if isSignedIn() && isOwner(userId);
-       allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow read, update: if isSignedIn() && isOwner(userId);
+      // Admins can read any user's profile
+      allow get: if isSignedIn() && isAdmin();
+      
+      // Rules for user subcollections
+      match /chatSessions/{sessionId} {
+        allow read, write, create: if isSignedIn() && isOwner(userId);
+      }
+      match /recommendations/{recommendationId} {
+        allow read, write, create, delete: if isSignedIn() && isOwner(userId);
+      }
+       match /quizResults/{quizId} {
+        allow read, write, create: if isSignedIn() && isOwner(userId);
+      }
+      match /bookmarkedColleges/{collegeId} {
+        allow read, write, create, delete: if isSignedIn() && isOwner(userId);
+      }
     }
 
-    // Users can manage their own subcollections
-    match /users/{userId}/{subcollection}/{docId} where subcollection in ['bookmarkedColleges', 'chatSessions', 'recommendations', 'quizResults'] {
-      allow read, write, delete, create: if isSignedIn() && isOwner(userId);
+    // Admins can list all users
+    match /users {
+        allow list: if isSignedIn() && isAdmin();
+    }
+
+    // Public collections readable by any signed-in user
+    match /careers/{careerId} {
+      allow read: if isSignedIn();
+    }
+    match /colleges/{collegeId} {
+      allow read: if isSignedIn();
+    }
+    match /exams/{examId} {
+      allow read: if isSignedIn();
+    }
+    match /scholarships/{scholarshipId} {
+        allow read: if isSignedIn();
+    }
+     match /studyMaterials/{materialId} {
+        allow read: if isSignedIn();
     }
   }
 }
