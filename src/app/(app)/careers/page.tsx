@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2, Sparkles, Wand2, Code } from "lucide-react"
+import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2, Sparkles, Wand2, Code, ScrollText } from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { generateDayInLifeStory, DayInLifeStoryOutput } from '@/ai/flows/day-in-a-life-story-generator';
@@ -175,6 +175,23 @@ const sampleCareers: Course[] = [
     paths: ["Policy Analyst", "Civil Servant (IAS, IPS)", "Legislative Assistant", "Political Consultant"],
     industries: ["Government", "NGOs", "Think Tanks", "Media"],
     further_study: ["M.A. in Political Science", "Master's in Public Policy", "LLB"]
+  },
+    // Professional Stream
+  {
+    stream: "Professional",
+    degree: "CA (Chartered Accountancy)",
+    iconName: "ScrollText",
+    paths: ["Statutory Auditor", "Tax Consultant", "Management Consultant", "Forensic Auditor"],
+    industries: ["Audit Firms (Big 4)", "Corporate Finance", "Banking", "Consulting"],
+    further_study: ["CISA", "CFA", "MBA"]
+  },
+  {
+    stream: "Professional",
+    degree: "CS (Company Secretary)",
+    iconName: "ScrollText",
+    paths: ["Company Secretary", "Compliance Officer", "Corporate Lawyer", "Governance Professional"],
+    industries: ["Listed Companies", "Law Firms", "Regulatory Bodies (SEBI)", "Banking"],
+    further_study: ["LLB", "MBA in Finance", "CFA"]
   }
 ];
 
@@ -186,7 +203,8 @@ const iconComponents: { [key: string]: React.ElementType } = {
   BarChart,
   Briefcase,
   Palette,
-  Code
+  Code,
+  ScrollText
 };
 
 export default function CareersPage() {
