@@ -1,3 +1,8 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-context';
 import {
   SidebarProvider,
   Sidebar,
@@ -10,7 +15,7 @@ import { Logo } from '@/components/logo';
 import { AppNav } from '@/components/app-nav';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Bell } from 'lucide-react';
+import { Bell, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,12 +24,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { auth } from '@/lib/firebase';
+import { Loader2 } from 'lucide-react';
 
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    router.push('/login');
+  };
+  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -50,19 +79,22 @@ export default function AppLayout({
               <DropdownMenuTrigger asChild>
                 <Button variant="secondary" size="icon" className="rounded-full">
                   <Avatar>
-                    <AvatarImage src="https://picsum.photos/seed/103/40/40" alt="User avatar" data-ai-hint="student profile" />
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/103/40/40"} alt="User avatar" data-ai-hint="student profile" />
+                    <AvatarFallback>{user.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
                   </Avatar>
                   <span className="sr-only">Toggle user menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Profile</DropdownMenuItem>
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

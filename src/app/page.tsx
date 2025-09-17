@@ -12,7 +12,7 @@ export default function LandingPage() {
       <header className="container mx-auto h-20 flex items-center justify-between px-4 md:px-6">
         <Logo />
         <Button asChild>
-          <Link href="/dashboard">
+          <Link href="/login">
             Get Started <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -28,7 +28,7 @@ export default function LandingPage() {
                 Disha Path is your personalized guide to discovering the right courses, colleges, and career opportunities after your 10th and 12th grade.
               </p>
               <Button size="lg" asChild>
-                <Link href="/dashboard">
+                <Link href="/login">
                   Start Your Journey
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
@@ -127,7 +127,7 @@ export default function LandingPage() {
                     Take the first step towards a successful career. It's free, easy, and could change your life.
                 </p>
                 <Button size="lg" className="mt-8" asChild>
-                    <Link href="/dashboard">
+                    <Link href="/login">
                         Get Started Now
                         <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
