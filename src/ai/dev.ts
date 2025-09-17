@@ -7,3 +7,4 @@ import '@/ai/flows/career-counselor-chat.ts';
 import '@/ai/flows/day-in-a-life-story-generator.ts';
 import '@/ai/flows/find-colleges-flow.ts';
 import '@/ai/flows/save-chat-history.ts';
+import '@/ai/flows/explore-future-pathways.ts';
