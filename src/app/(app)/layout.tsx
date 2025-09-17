@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/logo';
 import { AppNav } from '@/components/app-nav';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Bell, LogOut, User } from 'lucide-react';
 import {
@@ -26,7 +25,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { auth } from '@/lib/firebase';
 import { Loader2 } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
 
 
@@ -37,9 +35,7 @@ export default function AppLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const userAvatar = PlaceHolderImages.find(p => p.id === 'user-avatar');
-
-
+  
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
@@ -83,10 +79,7 @@ export default function AppLayout({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="secondary" size="icon" className="rounded-full">
-                  <Avatar>
-                    <AvatarImage src={user.photoURL || userAvatar?.imageUrl} alt="User avatar" data-ai-hint={userAvatar?.imageHint} />
-                    <AvatarFallback>{user.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
-                  </Avatar>
+                  <User className="h-5 w-5" />
                   <span className="sr-only">Toggle user menu</span>
                 </Button>
               </DropdownMenuTrigger>
