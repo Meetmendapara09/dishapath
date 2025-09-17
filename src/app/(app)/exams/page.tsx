@@ -19,12 +19,52 @@ interface Exam {
   tentativeDate: string;
 }
 
-export default function ExamsPage() {
-  const [exams, setExams] = useState<Exam[]>([]);
-  const [loading, setLoading] = useState(true);
+// Sample data to display since the database is empty
+const sampleExams: Exam[] = [
+    {
+        id: 'jee-main',
+        name: 'JEE Main',
+        purpose: 'Engineering Entrance',
+        subjects: ['Physics', 'Chemistry', 'Mathematics'],
+        website: 'https://jeemain.nta.nic.in/',
+        tentativeDate: 'January & April'
+    },
+    {
+        id: 'neet',
+        name: 'NEET (UG)',
+        purpose: 'Medical Entrance',
+        subjects: ['Physics', 'Chemistry', 'Biology'],
+        website: 'https://neet.nta.nic.in/',
+        tentativeDate: 'May'
+    },
+    {
+        id: 'cuet',
+        name: 'CUET',
+        purpose: 'Central University Entrance',
+        subjects: ['Varies by Course'],
+        website: 'https://cuet.samarth.ac.in/',
+        tentativeDate: 'May - June'
+    },
+    {
+        id: 'clat',
+        name: 'CLAT',
+        purpose: 'Law Entrance',
+        subjects: ['English', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques', 'Current Affairs'],
+        website: 'https://consortiumofnlus.ac.in/',
+        tentativeDate: 'December'
+    }
+];
 
+
+export default function ExamsPage() {
+  const [exams, setExams] = useState<Exam[]>(sampleExams);
+  const [loading, setLoading] = useState(false);
+
+  /*
+  // This code will fetch from Firestore. Uncomment it when you have data in the 'exams' collection.
   useEffect(() => {
     async function fetchExams() {
+      setLoading(true);
       try {
         const querySnapshot = await getDocs(collection(db, 'exams'));
         const fetchedExams = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Exam));
@@ -37,6 +77,7 @@ export default function ExamsPage() {
     }
     fetchExams();
   }, []);
+  */
 
   if (loading) {
     return (
