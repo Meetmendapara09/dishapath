@@ -84,7 +84,11 @@ const personalizedCollegeRecommendationsFlow = ai.defineFlow(
     outputSchema: PersonalizedCollegeRecommendationsOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await ai.generate({
+      model: 'googleai/gemini-2.5-flash',
+      prompt: await prompt.render({input}),
+      output: {schema: PersonalizedCollegeRecommendationsOutputSchema},
+    });
     return output!;
   }
 );

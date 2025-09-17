@@ -58,7 +58,11 @@ const exploreFuturePathwaysFlow = ai.defineFlow(
     outputSchema: ExploreFuturePathwaysOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
+    const { output } = await ai.generate({
+      model: 'googleai/gemini-2.5-flash',
+      prompt: await prompt.render({input}),
+      output: {schema: ExploreFuturePathwaysOutputSchema},
+    });
     return output!;
   }
 );
