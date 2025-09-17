@@ -67,10 +67,40 @@ const sampleExams: Exam[] = [
     {
         id: 'clat',
         name: 'CLAT',
-        purpose: 'Law Entrance (22 National Law Universities)',
+        purpose: 'Law Entrance (22+ National Law Universities)',
         subjects: ['English', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques', 'Current Affairs'],
         website: 'https://consortiumofnlus.ac.in/',
         tentativeDate: 'December',
+        level: 'After 12th',
+        field: 'Law'
+    },
+    {
+        id: 'ailet',
+        name: 'AILET',
+        purpose: 'Law Entrance (NLU Delhi)',
+        subjects: ['English', 'Logical Reasoning', 'General Knowledge'],
+        website: 'https://nationallawuniversitydelhi.in/',
+        tentativeDate: 'December',
+        level: 'After 12th',
+        field: 'Law'
+    },
+    {
+        id: 'lsat-india',
+        name: 'LSAT—India',
+        purpose: 'Law Entrance (Jindal, BML Munjal, etc.)',
+        subjects: ['Analytical Reasoning', 'Logical Reasoning', 'Reading Comprehension'],
+        website: 'https://www.lsac.org/lsat-india',
+        tentativeDate: 'January & May',
+        level: 'After 12th',
+        field: 'Law'
+    },
+    {
+        id: 'slat',
+        name: 'SLAT',
+        purpose: 'Law Entrance (Symbiosis Law Schools)',
+        subjects: ['Logical Reasoning', 'Legal Reasoning', 'Analytical Reasoning', 'Reading Comprehension', 'GK'],
+        website: 'https://www.set-test.org/',
+        tentativeDate: 'May',
         level: 'After 12th',
         field: 'Law'
     },
@@ -120,7 +150,47 @@ const sampleExams: Exam[] = [
         purpose: 'Chartered Accountancy First Level',
         subjects: ['Accounting', 'Business Laws', 'Mathematics & Statistics', 'Business Economics'],
         website: 'https://www.icai.org/',
-        tentativeDate: 'May & November',
+        tentativeDate: 'June & December',
+        level: 'After 12th',
+        field: 'Commerce'
+    },
+    {
+        id: 'cs-foundation',
+        name: 'CS Foundation (CSEET)',
+        purpose: 'Company Secretary Entrance Test',
+        subjects: ['Business Communication', 'Legal Aptitude', 'Economic & Business Environment', 'Current Affairs'],
+        website: 'https://www.icsi.edu/',
+        tentativeDate: 'Jan, May, July, Nov',
+        level: 'After 12th',
+        field: 'Commerce'
+    },
+    {
+        id: 'cma-foundation',
+        name: 'CMA Foundation',
+        purpose: 'Cost & Management Accountancy First Level',
+        subjects: ['Economics & Management', 'Accounting', 'Laws & Ethics', 'Business Mathematics & Statistics'],
+        website: 'https://icmai.in/',
+        tentativeDate: 'June & December',
+        level: 'After 12th',
+        field: 'Commerce'
+    },
+    {
+        id: 'npat',
+        name: 'NPAT',
+        purpose: 'UG Admission (BBA, B.Com, etc.) for NMIMS',
+        subjects: ['Quantitative', 'Reasoning', 'English'],
+        website: 'https://www.nmimsnpat.in/',
+        tentativeDate: 'January - May',
+        level: 'After 12th',
+        field: 'Commerce'
+    },
+    {
+        id: 'set',
+        name: 'SET',
+        purpose: 'UG Admission (BBA, BCA, etc.) for Symbiosis',
+        subjects: ['General English', 'Quantitative', 'General Awareness', 'Analytical & Logical Reasoning'],
+        website: 'https://www.set-test.org/',
+        tentativeDate: 'May',
         level: 'After 12th',
         field: 'Commerce'
     },
@@ -203,14 +273,16 @@ export default function ExamsPage() {
       try {
         const querySnapshot = await getDocs(collection(db, 'exams'));
         const fetchedExams = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Exam));
-        setExams(fetchedExams);
+        if (fetchedExams.length > 0) {
+          setExams(fetchedExams);
+        }
       } catch (error) {
         console.error("Error fetching exams:", error);
       } finally {
         setLoading(false);
       }
     }
-    fetchExams();
+    // fetchExams(); // Uncomment this line to fetch from Firestore
   }, []);
   */
   
@@ -250,7 +322,7 @@ export default function ExamsPage() {
         </div>
          <Tabs value={fieldFilter} onValueChange={setFieldFilter} className="w-full">
             <TabsList className="flex flex-wrap h-auto">
-                {examFields.map(field => (
+                {examFields.sort().map(field => (
                     <TabsTrigger key={field} value={field}>{field}</TabsTrigger>
                 ))}
             </TabsList>
@@ -261,7 +333,12 @@ export default function ExamsPage() {
         <Card>
           <CardHeader>
             <CardTitle>No Exams Found</CardTitle>
-            <CardDescription>Your current filter selection returned no results. Try a different filter.</CardDescription>
+            <CardDescription>
+                {exams.length > 0 
+                ? "Your current filter selection returned no results. Try a different filter."
+                : "Please add exam information to the 'exams' collection in Firestore."
+                }
+            </CardDescription>
           </CardHeader>
         </Card>
       ) : (
@@ -299,3 +376,5 @@ export default function ExamsPage() {
     </div>
   );
 }
+
+    
