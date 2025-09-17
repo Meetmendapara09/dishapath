@@ -7,20 +7,48 @@ import {Button} from '@/components/ui/button';
 import {Send, User, Bot, Sparkles} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import { careerCounselorChat } from '@/ai/flows/career-counselor-chat';
+import { useAuth } from '@/contexts/auth-context';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+
+type UserProfile = {
+  displayName?: string;
+  class?: string;
+  academicInterests?: string;
+}
 
 export function Chat() {
+  const { user } = useAuth();
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useAIState<any[]>();
   const {stream, done} = useActions<typeof import('@/ai/flows/career-counselor-chat')>({
     stream: {
-      careerCounselorChat: async (history, message) => {
+      careerCounselorChat: async (history, message, userProfile) => {
         'use server';
-        return await careerCounselorChat(history, message);
+        return await careerCounselorChat(history, message, userProfile);
       }
     }
   });
   const [streaming, setStreaming] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>();
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserProfile({
+            displayName: userData.displayName,
+            class: userData.class,
+            academicInterests: userData.academicInterests,
+          });
+        }
+      }
+    }
+    fetchProfile();
+  }, [user]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -91,12 +119,21 @@ export function Chat() {
 
             const userMessage = { role: 'user', content: inputValue };
             setMessages([...messages, userMessage]);
+            setInputValue('');
 
             let accumulatedContent = '';
             setStreaming(true);
+            
+            // Map messages to the format expected by the AI flow
+            const historyForAI = messages.map(m => ({
+              role: m.role,
+              content: [{text: m.content}]
+            }));
+
             for await (const delta of stream.careerCounselorChat(
-              messages.map(m => ({role: m.role, content: [{text: m.content}]})),
-              inputValue
+              historyForAI,
+              inputValue,
+              userProfile
             )) {
               accumulatedContent += delta;
               setMessages([
@@ -105,8 +142,6 @@ export function Chat() {
                 { role: 'assistant', content: accumulatedContent },
               ]);
             }
-
-            setInputValue('');
           }}
         >
           <div className="relative">
