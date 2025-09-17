@@ -120,7 +120,8 @@ export async function findCollegesFlow(
 ): Promise<FindCollegesOutput> {
   const llmResponse = await ai.generate({
     model: 'googleai/gemini-2.5-flash',
-    prompt: await prompt.render({input}),
+    prompt,
+    input,
     output: {schema: FindCollegesOutputSchema},
   });
   return llmResponse.output!;
