@@ -45,10 +45,10 @@ const prompt = ai.definePrompt({
 
   Based on this interest, identify 2-3 emerging or future technologies and fields. For each field:
   1.  Provide an exciting, one-paragraph description of the technology and its potential impact.
-  2.  Outline a clear, step-by-step "pathway" a student in India could follow. Start from 12th grade subjects, mention relevant undergraduate degrees (like B.Tech, B.Sc), suggest key skills to learn (e.g., programming languages, lab techniques), and recommend extracurriculars (e.g., projects, internships).
-  3.  List a few specific, future-oriented job titles within that field.
+  2.  Outline a clear, actionable, step-by-step "pathway" a student in India could follow. Be very specific. Start from 12th grade subjects (e.g., "Focus on PCM with Computer Science"), mention relevant undergraduate degrees (e.g., "Pursue a B.Tech in AI & ML"), suggest specific skills to learn (e.g., "Master Python, TensorFlow, and PyTorch"), and recommend concrete extracurriculars (e.g., "Build a chatbot that solves a local problem," "Intern at a tech startup").
+  3.  List a few specific, future-oriented job titles within that field (e.g., "AI Ethics Officer," "Quantum Machine Learning Analyst").
 
-  Keep the tone optimistic and inspiring. The goal is to make the future feel accessible and exciting.`,
+  Keep the tone optimistic, inspiring, and highly motivational. The goal is to make the future feel accessible and exciting, with a clear, actionable plan.`,
 });
 
 const exploreFuturePathwaysFlow = ai.defineFlow(

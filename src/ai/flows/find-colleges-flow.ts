@@ -89,7 +89,7 @@ const FindCollegesOutputSchema = z.object({
       medium: z.string(),
     })
   ),
-  summary: z.string().describe('A brief summary of the search results.'),
+  summary: z.string().describe('A brief, insightful, and helpful summary of the search results for the user.'),
 });
 export type FindCollegesOutput = z.infer<typeof FindCollegesOutputSchema>;
 
@@ -105,7 +105,7 @@ const prompt = ai.definePrompt({
   2.  Identify key criteria like course names, city, facilities, or specific college names.
   3.  Use the 'findColleges' tool to search the database based on the identified criteria. You can make multiple tool calls if needed to explore different criteria.
   4.  From the tool's output (which is a JSON string of college data), populate the 'colleges' array in your final response.
-  5.  Write a friendly, concise 'summary' of the results for the user. If no colleges were found, explain why and suggest a different search.
+  5.  Write a friendly, concise, and helpful 'summary' of the results for the user. If no colleges were found, explain why and suggest a different, more effective search strategy. If colleges were found, highlight one or two interesting options.
 
   Example Query: "show me colleges in Mumbai with a B.Com course"
   - You would call the tool with: { city: "Mumbai", course: "B.Com" }

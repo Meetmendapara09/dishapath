@@ -42,6 +42,11 @@ const PersonalizedCollegeRecommendationsOutputSchema = z.object({
   careerPaths: z
     .array(z.string())
     .describe('A list of career paths aligned with the student aptitude.'),
+  rationale: z
+    .string()
+    .describe(
+      'A clear, personalized rationale explaining *why* these recommendations are a good fit for the student, connecting their interests, strengths, and goals to the suggestions.'
+    ),
 });
 
 export type PersonalizedCollegeRecommendationsOutput = z.infer<
@@ -58,7 +63,7 @@ const prompt = ai.definePrompt({
   name: 'personalizedCollegeRecommendationsPrompt',
   input: {schema: PersonalizedCollegeRecommendationsInputSchema},
   output: {schema: PersonalizedCollegeRecommendationsOutputSchema},
-  prompt: `You are an AI-powered career and education advisor.
+  prompt: `You are an AI-powered career and education advisor. Your goal is to provide excellent, personalized recommendations.
 
 Based on the following student profile, provide personalized recommendations for courses, colleges, and career paths.
 
@@ -67,14 +72,18 @@ Student Profile:
 - Gender: {{{gender}}}
 - Class: {{{class}}}
 - Academic Interests: {{{academicInterests}}}
-- Quiz Results: {{{quizResults}}}
+- Quiz Results (Interests, Strengths, Personality): {{{quizResults}}}
 - Career Goals: {{{careerGoals}}}
 - Location: {{{location}}}
 
-Consider the student's interests, strengths, personality traits, and location when making recommendations.
+Your task:
+1.  **Analyze the profile:** Deeply consider the student's interests, strengths, personality traits, and location.
+2.  **Recommend Courses, Colleges, and Careers:** Suggest specific courses, potential nearby colleges (be general if you're unsure), and aligned career paths.
+3.  **Provide a Strong Rationale:** This is the most important part. In the 'rationale' field, write a clear, encouraging, and detailed explanation. Justify *why* you are recommending each course and career path. Connect your suggestions directly to the student's stated interests, strengths, and goals. For example, "Because you enjoy solving puzzles and are good at math, a career in Data Science could be a great fit. A Bachelor of Science in Computer Science would be an excellent first step."
+
 If the gender is 'Prefer not to say', do not use gender as a factor in your recommendations.
 
-Output the recommendations in JSON format.`,
+Output the recommendations in the required JSON format.`,
 });
 
 const personalizedCollegeRecommendationsFlow = ai.defineFlow(

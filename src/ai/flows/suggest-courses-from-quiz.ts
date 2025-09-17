@@ -30,7 +30,7 @@ const SuggestCoursesFromQuizOutputSchema = z.object({
   rationale: z
     .string()
     .describe(
-      'A detailed explanation of why these streams and courses are recommended, aligning the quiz results and career goals.'
+      'A detailed and personalized explanation of why these streams and courses are recommended, directly connecting the quiz results and career goals to the suggestions.'
     ),
 });
 export type SuggestCoursesFromQuizOutput = z.infer<typeof SuggestCoursesFromQuizOutputSchema>;
@@ -45,16 +45,19 @@ const prompt = ai.definePrompt({
   name: 'suggestCoursesFromQuizPrompt',
   input: {schema: SuggestCoursesFromQuizInputSchema},
   output: {schema: SuggestCoursesFromQuizOutputSchema},
-  prompt: `You are an AI career counselor specializing in suggesting academic streams and courses to students based on their interests, strengths, and career goals.
+  prompt: `You are an expert AI career counselor. Your task is to suggest academic streams and courses to students based on their quiz results and career aspirations.
 
-  Analyze the student's quiz results and career goals to recommend suitable academic streams (Arts, Science, Commerce) and specific courses.
-  Provide a rationale for each suggestion, explaining how it aligns with the student's profile.
+  Analyze the student's quiz results and any stated career goals to recommend suitable academic streams (Arts, Science, Commerce) and specific courses.
 
-  Quiz Results: {{{quizResult}}}
-  Career Goals: {{{careerGoals}}}
+  **Most importantly**, you must provide a strong, detailed, and personalized rationale for your suggestions. In the 'rationale' field, explain exactly how the quiz results (e.g., "enjoys solving puzzles," "prefers working with hands") and career goals align with the recommended streams and courses. Make direct connections.
 
-  Based on this information, suggest academic streams and courses.
-  Be sure to explain the reasoning for each suggestion in the rationale section.`,
+  **Quiz Results:**
+  {{{quizResult}}}
+
+  **Career Goals (if any):**
+  {{{careerGoals}}}
+
+  Based on this information, provide your suggestions. The quality of your rationale is critical.`,
 });
 
 const suggestCoursesFromQuizFlow = ai.defineFlow(

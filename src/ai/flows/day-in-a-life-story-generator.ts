@@ -6,7 +6,8 @@
  *
  * - generateDayInLifeStory - A function that generates the story.
  * - DayInLifeStoryInput - The input type for the function.
- * - DayInLifeStoryOutput - The return type for the function.
+ * - DayInLife-in-a-life-story-generator.ts
+InLifeStoryOutput - The return type for the function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -39,12 +40,14 @@ const prompt = ai.definePrompt({
 
   Your task is to write a short, first-person narrative story about a typical day for someone working as a {{{career}}}.
 
-  The story should be:
-  - Engaging, interesting, and easy to read for a high school student.
-  - Informative, highlighting key tasks, challenges, and rewarding aspects of the job.
-  - Set in an Indian context.
+  The story must be:
+  - Vivid, engaging, interesting, and easy to read for a high school student.
+  - Informative, highlighting key tasks, challenges, and rewarding aspects of the job. It should include specific details about the daily routine, tools or software used, and interactions with colleagues or clients.
+  - Told from a first-person perspective (e.g., "My day started with...").
+  - Set in a realistic Indian context (mentioning a city or relatable work culture details is a plus).
   - Formatted with markdown (e.g., headings, bold text, lists) to improve readability.
-  - Start with a creative title.
+  - Conclude with a personal reflection on the career at the end of the day.
+  - Start with a creative and compelling title.
 
   Generate a story for the career: {{{career}}}`,
 });
