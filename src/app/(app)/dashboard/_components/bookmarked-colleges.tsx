@@ -1,9 +1,9 @@
 // src/app/(app)/dashboard/_components/bookmarked-colleges.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
-import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,33 +21,38 @@ export function BookmarkedColleges() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchBookmarks = useCallback(async () => {
     if (!user) {
         setLoading(false);
         return;
     };
     
     setLoading(true);
-    const unsubscribe = onSnapshot(collection(db, 'users', user.uid, 'bookmarkedColleges'), (snapshot) => {
+    try {
+      const snapshot = await getDocs(collection(db, 'users', user.uid, 'bookmarkedColleges'));
       const bookmarks = snapshot.docs.map(doc => ({
         id: doc.id,
         name: doc.data().name,
       }));
       setBookmarkedColleges(bookmarks);
-      setLoading(false);
-    }, (error) => {
+    } catch (error) {
         console.error("Error fetching bookmarks:", error);
         toast({ variant: 'destructive', title: 'Error', description: 'Could not fetch your bookmarked colleges.' });
+    } finally {
         setLoading(false);
-    });
-
-    return () => unsubscribe();
+    }
   }, [user, toast]);
+
+  useEffect(() => {
+    fetchBookmarks();
+  }, [fetchBookmarks]);
 
   const handleRemoveBookmark = async (collegeId: string, collegeName: string) => {
     if (!user) return;
     try {
       await deleteDoc(doc(db, 'users', user.uid, 'bookmarkedColleges', collegeId));
+      // Refresh the list after removing a bookmark
+      fetchBookmarks();
       toast({ title: 'Bookmark Removed', description: `${collegeName} has been removed from your bookmarks.` });
     } catch (error) {
       console.error("Error removing bookmark:", error);
