@@ -72,6 +72,7 @@ Student Profile:
 - Location: {{{location}}}
 
 Consider the student's interests, strengths, personality traits, and location when making recommendations.
+If the gender is 'Prefer not to say', do not use gender as a factor in your recommendations.
 
 Output the recommendations in JSON format.`,
 });
