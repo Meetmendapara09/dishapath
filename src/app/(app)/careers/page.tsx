@@ -214,7 +214,7 @@ export default function CareersPage() {
         <p className="text-muted-foreground">Discover where different degrees can take you. Click on a course to see the possibilities.</p>
       </div>
       <Tabs defaultValue={streams[0]} className="w-full">
-        <TabsList className={`grid w-full grid-cols-${streams.length > 0 ? streams.length : 1}`}>
+        <TabsList>
           {streams.map(stream => (
             <TabsTrigger key={stream} value={stream}>{stream}</TabsTrigger>
           ))}
