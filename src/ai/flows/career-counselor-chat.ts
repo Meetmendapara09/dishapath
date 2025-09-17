@@ -9,7 +9,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {stream} from 'genkit/stream';
 import {
   collection,
   getDocs,
@@ -169,16 +168,24 @@ export async function careerCounselorChat(
   history: z.infer<typeof CareerCounselorInputSchema>['history'],
   message: string,
   userProfile?: z.infer<typeof CareerCounselorInputSchema>['userProfile'],
-) {
+): Promise<ReadableStream<string>> {
   const {stream, response} = await ai.generateStream({
     model: 'googleai/gemini-2.5-flash',
     prompt: await prompt({history, message, userProfile}),
     history,
   });
 
-  return stream(async function* (chunk) {
-    for await (const c of chunk) {
-      yield c.text;
-    }
+  const encoder = new TextEncoder();
+  const readableStream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of stream) {
+        if (chunk.text) {
+          controller.enqueue(encoder.encode(chunk.text));
+        }
+      }
+      controller.close();
+    },
   });
+
+  return readableStream;
 }
