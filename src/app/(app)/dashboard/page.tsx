@@ -1,3 +1,5 @@
+'use client';
+
 import { PersonalizedRecsForm } from './_components/personalized-recs-form';
 import { useAuth } from '@/contexts/auth-context';
 import { Timeline } from './_components/timeline';
