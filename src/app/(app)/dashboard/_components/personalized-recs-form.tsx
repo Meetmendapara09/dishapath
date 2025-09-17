@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -15,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Sparkles, School, Briefcase, GraduationCap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/auth-context';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 const formSchema = z.object({
@@ -28,7 +29,7 @@ const formSchema = z.object({
   location: z.string().min(1, 'Location is required'),
 });
 
-export function PersonalizedRecsForm() {
+export function PersonalizedRecsForm({ onRecommendationGenerated }: { onRecommendationGenerated: () => void }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<PersonalizedCollegeRecommendationsOutput | null>(null);
@@ -53,7 +54,6 @@ export function PersonalizedRecsForm() {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          // Pre-fill form with user data from Firestore
           form.reset({
             ...form.getValues(),
             class: userData.class || form.getValues().class,
@@ -67,11 +67,25 @@ export function PersonalizedRecsForm() {
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!user) return;
     setLoading(true);
     setRecommendations(null);
     try {
       const result = await personalizedCollegeRecommendations(values);
       setRecommendations(result);
+
+      // Save to Firestore
+      await addDoc(collection(db, 'users', user.uid, 'recommendations'), {
+        ...result,
+        inputs: values, // Optionally save the inputs that generated this
+        createdAt: serverTimestamp(),
+      });
+      toast({
+        title: 'Success!',
+        description: 'Your recommendations have been generated and saved.',
+      });
+      onRecommendationGenerated(); // Notify parent to refresh list
+
     } catch (error) {
       console.error('Error fetching recommendations:', error);
       toast({
@@ -134,7 +148,7 @@ export function PersonalizedRecsForm() {
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select class" />
-                      </SelectTrigger>
+                      </Trigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="10th">10th</SelectItem>
@@ -228,7 +242,7 @@ export function PersonalizedRecsForm() {
         <Card className="mt-8 bg-primary/5 border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-3 font-headline text-xl">
-              <Sparkles className="text-accent" /> Here are your personalized recommendations!
+              <Sparkles className="text-accent" /> Here are your new recommendations!
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -262,3 +276,5 @@ export function PersonalizedRecsForm() {
     </>
   );
 }
+
+    
