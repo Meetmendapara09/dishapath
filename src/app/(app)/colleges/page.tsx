@@ -26,6 +26,57 @@ interface College {
   medium: string;
 }
 
+const sampleColleges: College[] = [
+    {
+        id: 'iit-delhi',
+        name: 'IIT Delhi',
+        imageUrlId: 'college-1',
+        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
+        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
+        medium: 'English'
+    },
+    {
+        id: 'iit-bombay',
+        name: 'IIT Bombay',
+        imageUrlId: 'college-2',
+        courses: ['B.Tech', 'B.Des', 'M.Sc'],
+        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
+        medium: 'English'
+    },
+    {
+        id: 'nit-trichy',
+        name: 'NIT Tiruchirappalli',
+        imageUrlId: 'college-3',
+        courses: ['B.Tech', 'B.Arch', 'MCA'],
+        facilities: ['Hostel', 'Library', 'Lab'],
+        medium: 'English'
+    },
+    {
+        id: 'nit-warangal',
+        name: 'NIT Warangal',
+        imageUrlId: 'college-4',
+        courses: ['B.Tech', 'M.Tech', 'MBA'],
+        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
+        medium: 'English'
+    },
+    {
+        id: 'iiit-hyderabad',
+        name: 'IIIT Hyderabad',
+        imageUrlId: 'college-1',
+        courses: ['B.Tech', 'MS by Research', 'Ph.D'],
+        facilities: ['Hostel', 'Library', 'Wifi'],
+        medium: 'English'
+    },
+    {
+        id: 'bits-pilani',
+        name: 'BITS Pilani',
+        imageUrlId: 'college-2',
+        courses: ['B.E.', 'M.E.', 'B.Pharm'],
+        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
+        medium: 'English'
+    }
+];
+
 const facilityIcons: { [key: string]: React.ReactElement } = {
   Hostel: <Home className="h-4 w-4" />,
   Library: <Library className="h-4 w-4" />,
@@ -35,7 +86,7 @@ const facilityIcons: { [key: string]: React.ReactElement } = {
 
 export default function CollegesPage() {
   const { user } = useAuth();
-  const [initialColleges, setInitialColleges] = useState<College[]>([]);
+  const [initialColleges, setInitialColleges] = useState<College[]>(sampleColleges);
   const [filteredColleges, setFilteredColleges] = useState<FindCollegesOutput['colleges'] | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,7 +101,11 @@ export default function CollegesPage() {
     try {
       const collegesSnapshot = await getDocs(collection(db, 'colleges'));
       const fetchedColleges = collegesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as College));
-      setInitialColleges(fetchedColleges);
+      if (fetchedColleges.length > 0) {
+        setInitialColleges(fetchedColleges);
+      } else {
+        setInitialColleges(sampleColleges); // Use sample data if firestore is empty
+      }
 
       if (user) {
         const bookmarksSnapshot = await getDocs(collection(db, 'users', user.uid, 'bookmarkedColleges'));
