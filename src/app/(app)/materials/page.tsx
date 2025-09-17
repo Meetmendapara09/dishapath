@@ -17,6 +17,70 @@ interface Material {
   category: 'guides' | 'papers' | 'links';
 }
 
+const sampleMaterials: Material[] = [
+    // Important Links
+    {
+        id: 'ndl',
+        title: 'National Digital Library of India',
+        description: 'A vast repository of e-books, articles, videos, and more from various educational institutions, supported by the Ministry of Education.',
+        link: 'https://ndl.iitkgp.ac.in/',
+        category: 'links'
+    },
+    {
+        id: 'acm-dl',
+        title: 'ACM Digital Library',
+        description: 'A comprehensive collection of full-text articles and papers from the Association for Computing Machinery, essential for engineering students.',
+        link: 'https://dl.acm.org/',
+        category: 'links'
+    },
+    {
+        id: 'pubmed',
+        title: 'PubMed Central (PMC)',
+        description: 'A free full-text archive of biomedical and life sciences journal literature at the U.S. National Institutes of Health\'s National Library of Medicine.',
+        link: 'https://www.ncbi.nlm.nih.gov/pmc/',
+        category: 'links'
+    },
+
+    // Study Guides
+    {
+        id: 'const-india',
+        title: 'Constitution of India',
+        description: 'The complete text of the Constitution of India, an essential resource for students of law, political science, and for civil services preparation.',
+        link: 'https://www.india.gov.in/my-government/constitution-india/constitution-india-full-text',
+        category: 'guides'
+    },
+    {
+        id: 'ncert-books',
+        title: 'NCERT E-Books (Class I-XII)',
+        description: 'Official NCERT textbooks, which form the foundation for many competitive exams like JEE, NEET, and UPSC.',
+        link: 'https://ncert.nic.in/textbook.php',
+        category: 'guides'
+    },
+
+    // Practice Papers
+    {
+        id: 'jee-main-papers',
+        title: 'JEE Main Previous Year Papers',
+        description: 'Official question papers from previous years of the Joint Entrance Examination (Main) for engineering aspirants.',
+        link: 'https://jeemain.nta.nic.in/previous-year-question-papers/',
+        category: 'papers'
+    },
+    {
+        id: 'neet-papers',
+        title: 'NEET (UG) Previous Year Papers',
+        description: 'Past question papers for the National Eligibility cum Entrance Test for medical and dental college aspirants.',
+        link: 'https://neet.nta.nic.in/question-papers/',
+        category: 'papers'
+    },
+    {
+        id: 'cuet-papers',
+        title: 'CUET (UG) Practice Papers',
+        description: 'Sample papers for the Common University Entrance Test, used for admission to various undergraduate programs.',
+        link: 'https://cuet.samarth.ac.in/index.php/site/syllabus',
+        category: 'papers'
+    },
+];
+
 const categoryIcons: { [key: string]: React.ReactElement } = {
   guides: <BookCopy className="h-6 w-6 text-primary" />,
   papers: <FileText className="h-6 w-6 text-primary" />,
@@ -30,8 +94,8 @@ const categoryHeadlines = {
 };
 
 const buttonText: { [key: string]: string } = {
-  guides: 'Visit Resource',
-  papers: 'Download',
+  guides: 'Read Now',
+  papers: 'View Papers',
   links: 'Visit Portal',
 };
 
@@ -45,7 +109,9 @@ export default function StudyMaterialsPage() {
         const querySnapshot = await getDocs(collection(db, 'studyMaterials'));
         const fetchedMaterials = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Material));
         
-        const groupedData = fetchedMaterials.reduce((acc: {[key: string]: Material[]}, material: Material) => {
+        let materialsToGroup = fetchedMaterials.length > 0 ? fetchedMaterials : sampleMaterials;
+        
+        const groupedData = materialsToGroup.reduce((acc: {[key: string]: Material[]}, material: Material) => {
           const { category } = material;
           if (!acc[category]) {
             acc[category] = [];
@@ -58,6 +124,16 @@ export default function StudyMaterialsPage() {
 
       } catch (error) {
         console.error("Error fetching study materials:", error);
+         // Fallback to sample data on error
+        const groupedData = sampleMaterials.reduce((acc: {[key: string]: Material[]}, material: Material) => {
+          const { category } = material;
+          if (!acc[category]) {
+            acc[category] = [];
+          }
+          acc[category].push(material);
+          return acc;
+        }, {});
+        setMaterials(groupedData);
       } finally {
         setLoading(false);
       }
@@ -73,7 +149,10 @@ export default function StudyMaterialsPage() {
     );
   }
 
-  const categories = Object.keys(materials);
+  const categories = Object.keys(materials).sort((a,b) => {
+    const order = ['links', 'guides', 'papers'];
+    return order.indexOf(a) - order.indexOf(b);
+  });
 
   return (
     <div className="space-y-8">
@@ -86,7 +165,7 @@ export default function StudyMaterialsPage() {
          <Card>
           <CardHeader>
             <CardTitle>No Materials Found</CardTitle>
-            <CardDescription>Please add materials to the 'studyMaterials' collection in Firestore.</CardDescription>
+            <CardDescription>Please add materials to the 'studyMaterials' collection in Firestore or check sample data.</CardDescription>
           </CardHeader>
         </Card>
       ) : (
@@ -106,7 +185,7 @@ export default function StudyMaterialsPage() {
                                 <CardDescription className="mb-4">{item.description}</CardDescription>
                                 <Button asChild className="w-full">
                                     <Link href={item.link} target="_blank">
-                                        {buttonText[item.category]} <ArrowRight className="ml-2 h-4 w-4" />
+                                        {buttonText[item.category as keyof typeof buttonText]} <ArrowRight className="ml-2 h-4 w-4" />
                                     </Link>
                                 </Button>
                             </CardContent>
