@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import { findCollegesFlow, FindCollegesOutput } from '@/ai/flows/find-colleges-f
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface College {
   id: string;
@@ -44,34 +45,33 @@ export default function CollegesPage() {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const { toast } = useToast();
 
-  useEffect(() => {
-    async function fetchColleges() {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'colleges'));
-        const fetchedColleges = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as College));
-        setInitialColleges(fetchedColleges);
-      } catch (error) {
-        console.error("Error fetching colleges:", error);
-         toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to load initial college list.',
-        });
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchColleges();
-  }, [toast]);
-  
-  useEffect(() => {
-    if (!user) return;
-    const unsubscribe = onSnapshot(collection(db, 'users', user.uid, 'bookmarkedColleges'), (snapshot) => {
-        const bookmarks = snapshot.docs.map(doc => doc.id);
+  const fetchInitialData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const collegesSnapshot = await getDocs(collection(db, 'colleges'));
+      const fetchedColleges = collegesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as College));
+      setInitialColleges(fetchedColleges);
+
+      if (user) {
+        const bookmarksSnapshot = await getDocs(collection(db, 'users', user.uid, 'bookmarkedColleges'));
+        const bookmarks = bookmarksSnapshot.docs.map(doc => doc.id);
         setBookmarkedColleges(bookmarks);
-    });
-    return () => unsubscribe();
-  }, [user]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to load college list or bookmarks.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [user, toast]);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   const handleSearch = useCallback(async (query: string) => {
     if (query.trim().length < 3) {
@@ -114,9 +114,11 @@ export default function CollegesPage() {
     try {
         if (isBookmarked) {
             await deleteDoc(bookmarkRef);
+            setBookmarkedColleges(prev => prev.filter(id => id !== collegeId));
             toast({ title: 'Bookmark Removed', description: `${collegeData.name} has been removed from your bookmarks.` });
         } else {
             await setDoc(bookmarkRef, { ...collegeData, bookmarkedAt: new Date() });
+            setBookmarkedColleges(prev => [...prev, collegeId]);
             toast({ title: 'Bookmarked!', description: `${collegeData.name} has been added to your bookmarks.` });
         }
     } catch (error) {
