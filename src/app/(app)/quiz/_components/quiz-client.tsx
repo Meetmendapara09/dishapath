@@ -15,6 +15,9 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/auth-context';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 const questions = [
   {
@@ -42,6 +45,7 @@ const formSchema = z.object({
 });
 
 export function QuizClient() {
+  const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SuggestCoursesFromQuizOutput | null>(null);
@@ -65,6 +69,14 @@ export function QuizClient() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!user) {
+        toast({
+            variant: 'destructive',
+            title: 'Authentication Error',
+            description: 'You must be logged in to save quiz results.',
+        });
+        return;
+    }
     setLoading(true);
     setResults(null);
     const quizResult = `
@@ -75,12 +87,24 @@ export function QuizClient() {
     try {
       const result = await suggestCoursesFromQuiz({ quizResult, careerGoals: values.careerGoals });
       setResults(result);
+
+      // Save to Firestore
+      await addDoc(collection(db, 'users', user.uid, 'quizResults'), {
+        quizAnswers: values,
+        suggestions: result,
+        createdAt: serverTimestamp(),
+      });
+      toast({
+        title: 'Success!',
+        description: 'Your quiz results have been generated and saved.',
+      });
+
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
+      console.error('Error fetching or saving suggestions:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to generate suggestions. Please try again.',
+        description: 'Failed to generate or save suggestions. Please try again.',
       });
     } finally {
       setLoading(false);
