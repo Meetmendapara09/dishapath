@@ -270,6 +270,15 @@ export default function CareersPage() {
     return Icon ? <Icon className="h-5 w-5 text-primary" /> : <Briefcase className="h-5 w-5 text-primary" />;
   };
 
+  const markdownToHtml = (markdown: string) => {
+    return markdown
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\n/g, '<br />');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -385,7 +394,7 @@ export default function CareersPage() {
             ) : storyContent ? (
               <>
                 <h3 className="text-xl font-bold">{storyContent.title}</h3>
-                <div dangerouslySetInnerHTML={{ __html: storyContent.story.replace(/\n/g, '<br />') }} />
+                <div dangerouslySetInnerHTML={{ __html: markdownToHtml(storyContent.story) }} />
               </>
             ) : null}
           </div>
