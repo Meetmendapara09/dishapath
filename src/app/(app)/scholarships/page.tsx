@@ -24,25 +24,76 @@ interface Scholarship {
   link: string;
 }
 
+// Sample data to display since the database is empty
+const sampleScholarships: Scholarship[] = [
+  {
+    id: 'nmms',
+    name: 'National Merit Cum Means Scholarship (NMMS)',
+    provider: 'Department of School Education & Literacy, Govt. of India',
+    imageUrlId: 'scholarship-1',
+    eligibility: ['Class 9 Students', 'Family income < ₹3.5 Lakh'],
+    amount: '₹12,000 per annum',
+    deadline: 'October - November',
+    link: 'https://scholarships.gov.in/',
+  },
+  {
+    id: 'pm-yasasvi',
+    name: 'PM YASASVI Central Sector Scheme',
+    provider: 'Ministry of Social Justice & Empowerment',
+    imageUrlId: 'scholarship-1',
+    eligibility: ['Class 9-12 Students', 'OBC, EBC, DNT categories', 'Top Class Schools'],
+    amount: 'Up to ₹1,25,000 per annum',
+    deadline: 'August - September',
+    link: 'https://yet.nta.ac.in/',
+  },
+  {
+    id: 'digital-india',
+    name: 'Digital India Internship for NIC',
+    provider: 'National Informatics Centre (NIC)',
+    imageUrlId: 'scholarship-4',
+    eligibility: ['B.E/B.Tech, M.E/M.Tech, MCA', 'At least 75% marks'],
+    amount: '₹10,000 per month stipend',
+    deadline: 'Varies (check portal)',
+    link: 'https://www.nic.in/internship/',
+  },
+  {
+    id: 'scholarship-for-girls',
+    name: 'Begum Hazrat Mahal National Scholarship',
+    provider: 'Minority Affairs Foundation',
+    imageUrlId: 'scholarship-3',
+    eligibility: ['Girl Students from minority communities', 'Class 9-12', 'Family income < ₹2 Lakh'],
+    amount: 'Up to ₹6,000 per annum',
+    deadline: 'September - October',
+    link: 'https://scholarships.gov.in/',
+  },
+];
+
+
 export default function ScholarshipsPage() {
-  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [scholarships, setScholarships] = useState<Scholarship[]>(sampleScholarships);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  /*
+  // This code will fetch from Firestore. Uncomment it when you have data in the 'scholarships' collection.
   useEffect(() => {
     async function fetchScholarships() {
+      setLoading(true);
       try {
         const querySnapshot = await getDocs(collection(db, 'scholarships'));
         const fetchedScholarships = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Scholarship));
-        setScholarships(fetchedScholarships);
+        if (fetchedScholarships.length > 0) {
+            setScholarships(fetchedScholarships);
+        }
       } catch (error) {
         console.error("Error fetching scholarships:", error);
       } finally {
         setLoading(false);
       }
     }
-    fetchScholarships();
+    // fetchScholarships(); // Uncomment to fetch from Firestore
   }, []);
+  */
 
   const filteredScholarships = useMemo(() => {
     if (!searchQuery) {
