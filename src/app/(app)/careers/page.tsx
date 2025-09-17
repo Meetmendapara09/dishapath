@@ -8,7 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2 } from "lucide-react"
+import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2, Sparkles, Wand2 } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { generateDayInLifeStory, DayInLifeStoryOutput } from '@/ai/flows/day-in-a-life-story-generator';
+import { useToast } from '@/hooks/use-toast';
+
 
 interface Course {
   degree: string;
@@ -35,6 +40,11 @@ const iconComponents: { [key: string]: React.ElementType } = {
 export default function CareersPage() {
   const [careerData, setCareerData] = useState<CareerData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [storyModalOpen, setStoryModalOpen] = useState(false);
+  const [storyContent, setStoryContent] = useState<DayInLifeStoryOutput | null>(null);
+  const [storyLoading, setStoryLoading] = useState(false);
+  const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchCareers() {
@@ -61,6 +71,28 @@ export default function CareersPage() {
     }
     fetchCareers();
   }, []);
+
+  const handleGenerateStory = async (career: string) => {
+    setSelectedCareer(career);
+    setStoryModalOpen(true);
+    setStoryLoading(true);
+    setStoryContent(null);
+
+    try {
+      const result = await generateDayInLifeStory({ career });
+      setStoryContent(result);
+    } catch (error) {
+      console.error("Error generating story:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to generate the story. Please try again.',
+      });
+      setStoryModalOpen(false);
+    } finally {
+      setStoryLoading(false);
+    }
+  };
 
   const renderIcon = (iconName: string) => {
     const Icon = iconComponents[iconName];
@@ -129,17 +161,24 @@ export default function CareersPage() {
                                     <div>
                                         <h4 className="font-semibold flex items-center gap-2 mb-2"><Briefcase className="h-4 w-4" />Career Paths</h4>
                                         <div className="flex flex-wrap gap-2">
-                                            {course.paths.map(path => <Badge key={path} variant="secondary">{path}</Badge>)}
+                                            {course.paths.map(path => (
+                                              <div key={path} className="flex flex-col items-center gap-2">
+                                                <Badge variant="secondary" className="text-base px-3 py-1">{path}</Badge>
+                                                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => handleGenerateStory(path)}>
+                                                  <Wand2 className="h-3 w-3 mr-1"/> A Day in the Life
+                                                </Button>
+                                              </div>
+                                            ))}
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><Building className="h-4 w-4" />Industries</h4>
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2 mt-4"><Building className="h-4 w-4" />Industries</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {course.industries.map(industry => <Badge key={industry} variant="outline">{industry}</Badge>)}
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><GraduationCap className="h-4 w-4" />Further Studies</h4>
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2 mt-4"><GraduationCap className="h-4 w-4" />Further Studies</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {course.further_study.map(study => <Badge key={study} variant="default" className="bg-primary/80">{study}</Badge>)}
                                         </div>
@@ -154,6 +193,33 @@ export default function CareersPage() {
           </TabsContent>
         ))}
       </Tabs>
+
+      <Dialog open={storyModalOpen} onOpenChange={setStoryModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 font-headline text-2xl">
+              <Sparkles className="h-6 w-6 text-accent" /> A Day in the Life of a {selectedCareer}
+            </DialogTitle>
+            <DialogDescription>
+              Step into the shoes of a {selectedCareer} for a day. Here's a glimpse of what your future could look like.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="prose prose-sm max-h-[60vh] overflow-y-auto pr-4">
+            {storyLoading ? (
+              <div className="flex flex-col items-center justify-center text-center p-8 space-y-4">
+                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                  <p className="text-lg font-semibold">Our AI storyteller is writing...</p>
+                  <p className="text-muted-foreground">Please wait a moment.</p>
+              </div>
+            ) : storyContent ? (
+              <>
+                <h3 className="text-xl font-bold">{storyContent.title}</h3>
+                <div dangerouslySetInnerHTML={{ __html: storyContent.story.replace(/\n/g, '<br />') }} />
+              </>
+            ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,0 +1,62 @@
+// src/ai/flows/day-in-a-life-story-generator.ts
+'use server';
+
+/**
+ * @fileOverview An AI agent that generates a "day in the life" story for a given career.
+ *
+ * - generateDayInLifeStory - A function that generates the story.
+ * - DayInLifeStoryInput - The input type for the function.
+ * - DayInLifeStoryOutput - The return type for the function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+
+const DayInLifeStoryInputSchema = z.object({
+  career: z.string().describe('The career to generate the story for.'),
+});
+export type DayInLifeStoryInput = z.infer<typeof DayInLifeStoryInputSchema>;
+
+const DayInLifeStoryOutputSchema = z.object({
+  title: z.string().describe('A creative title for the story.'),
+  story: z
+    .string()
+    .describe('A first-person narrative story about a typical day in the specified career. Use markdown for formatting.'),
+});
+export type DayInLifeStoryOutput = z.infer<typeof DayInLifeStoryOutputSchema>;
+
+export async function generateDayInLifeStory(
+  input: DayInLifeStoryInput
+): Promise<DayInLifeStoryOutput> {
+  return dayInLifeStoryFlow(input);
+}
+
+const prompt = ai.definePrompt({
+  name: 'dayInLifeStoryPrompt',
+  input: {schema: DayInLifeStoryInputSchema},
+  output: {schema: DayInLifeStoryOutputSchema},
+  prompt: `You are a creative writer who specializes in writing engaging "A Day in the Life" stories for students exploring career options in India.
+
+  Your task is to write a short, first-person narrative story about a typical day for someone working as a {{{career}}}.
+
+  The story should be:
+  - Engaging, interesting, and easy to read for a high school student.
+  - Informative, highlighting key tasks, challenges, and rewarding aspects of the job.
+  - Set in an Indian context.
+  - Formatted with markdown (e.g., headings, bold text, lists) to improve readability.
+  - Start with a creative title.
+
+  Generate a story for the career: {{{career}}}`,
+});
+
+const dayInLifeStoryFlow = ai.defineFlow(
+  {
+    name: 'dayInLifeStoryFlow',
+    inputSchema: DayInLifeStoryInputSchema,
+    outputSchema: DayInLifeStoryOutputSchema,
+  },
+  async input => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);
