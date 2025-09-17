@@ -2,14 +2,12 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import Image from 'next/image';
 import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Home, Library, Microscope, Search, Wifi, Loader2, Sparkles, Bookmark } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useDebounce } from '@/hooks/use-debounce';
 import { findCollegesFlow, FindCollegesOutput } from '@/ai/flows/find-colleges-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -20,7 +18,6 @@ import { cn } from '@/lib/utils';
 interface College {
   id: string;
   name: string;
-  imageUrlId: string;
   courses: string[];
   facilities: string[];
   medium: string;
@@ -30,7 +27,6 @@ const sampleColleges: College[] = [
     {
         id: 'iit-delhi',
         name: 'IIT Delhi',
-        imageUrlId: 'college-1',
         courses: ['B.Tech', 'M.Tech', 'Ph.D'],
         facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
         medium: 'English'
@@ -38,7 +34,6 @@ const sampleColleges: College[] = [
     {
         id: 'iit-bombay',
         name: 'IIT Bombay',
-        imageUrlId: 'college-2',
         courses: ['B.Tech', 'B.Des', 'M.Sc'],
         facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
         medium: 'English'
@@ -46,7 +41,6 @@ const sampleColleges: College[] = [
     {
         id: 'nit-trichy',
         name: 'NIT Tiruchirappalli',
-        imageUrlId: 'college-3',
         courses: ['B.Tech', 'B.Arch', 'MCA'],
         facilities: ['Hostel', 'Library', 'Lab'],
         medium: 'English'
@@ -54,7 +48,6 @@ const sampleColleges: College[] = [
     {
         id: 'nit-warangal',
         name: 'NIT Warangal',
-        imageUrlId: 'college-4',
         courses: ['B.Tech', 'M.Tech', 'MBA'],
         facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
         medium: 'English'
@@ -62,7 +55,6 @@ const sampleColleges: College[] = [
     {
         id: 'iiit-hyderabad',
         name: 'IIIT Hyderabad',
-        imageUrlId: 'college-1',
         courses: ['B.Tech', 'MS by Research', 'Ph.D'],
         facilities: ['Hostel', 'Library', 'Wifi'],
         medium: 'English'
@@ -70,7 +62,6 @@ const sampleColleges: College[] = [
     {
         id: 'bits-pilani',
         name: 'BITS Pilani',
-        imageUrlId: 'college-2',
         courses: ['B.E.', 'M.E.', 'B.Pharm'],
         facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
         medium: 'English'
@@ -181,14 +172,6 @@ export default function CollegesPage() {
         toast({ variant: 'destructive', title: 'Error', description: 'Could not update your bookmarks. Please try again.' });
     }
   };
-
-  const getImage = (name: string) => {
-    // Create a semi-stable mapping from name to an image ID to avoid random images on each search
-    const imageIds = PlaceHolderImages.filter(p => p.id.startsWith('college-')).map(p => p.id);
-    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const imageId = imageIds[hash % imageIds.length] || 'college-1';
-    return PlaceHolderImages.find(img => img.id === imageId) ?? { imageUrl: '', imageHint: '' };
-  };
   
   const collegesToDisplay = filteredColleges !== null ? filteredColleges : initialColleges.map(c => ({...c, id: c.id}));
 
@@ -244,21 +227,11 @@ export default function CollegesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {collegesToDisplay.map((college) => {
-            const { imageUrl, imageHint } = getImage(college.name);
             const collegeId = (college as any).id || college.name; // Handle both initial and AI search results
             const isBookmarked = bookmarkedColleges.includes(collegeId);
             
             return (
-              <Card key={collegeId} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={imageUrl}
-                    alt={`Campus of ${college.name}`}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={imageHint}
-                  />
-                </div>
+              <Card key={collegeId} className="flex flex-col">
                 <CardHeader className="flex-row justify-between items-start">
                   <div>
                     <CardTitle>{college.name}</CardTitle>
