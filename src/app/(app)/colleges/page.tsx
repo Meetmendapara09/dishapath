@@ -24,167 +24,53 @@ interface College {
 }
 
 const sampleColleges: College[] = [
-    {
-        id: 'iit-jodhpur',
-        name: 'Indian Institute of Technology, Jodhpur',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-tirupati',
-        name: 'Indian Institute of Technology, Tirupati',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-guwahati',
-        name: 'Indian Institute of Technology, Guwahati',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-patna',
-        name: 'Indian Institute of Technology, Patna',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-bhilai',
-        name: 'Indian Institute of Technology, Bhilai',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-delhi',
-        name: 'Indian Institute of Technology, Delhi',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-goa',
-        name: 'Indian Institute of Technology, Goa',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-gandhinagar',
-        name: 'Indian Institute of Technology, Gandhinagar',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-mandi',
-        name: 'Indian Institute of Technology, Mandi',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-jammu',
-        name: 'Indian Institute of Technology, Jammu',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-dhanbad',
-        name: 'Indian Institute of Technology (ISM), Dhanbad',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-dharwad',
-        name: 'Indian Institute of Technology, Dharwad',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-palakkad',
-        name: 'Indian Institute of Technology, Palakkad',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-indore',
-        name: 'Indian Institute of Technology, Indore',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-bombay',
-        name: 'Indian Institute of Technology, Bombay',
-        courses: ['B.Tech', 'B.Des', 'M.Sc'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-bhubaneswar',
-        name: 'Indian Institute of Technology, Bhubaneswar',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-hyderabad',
-        name: 'Indian Institute of Technology, Hyderabad',
-        courses: ['B.Tech', 'MS by Research', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-ropar',
-        name: 'Indian Institute of Technology, Ropar',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-madras',
-        name: 'Indian Institute of Technology, Madras',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-kanpur',
-        name: 'Indian Institute of Technology, Kanpur',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-bhu',
-        name: 'Indian Institute of Technology (BHU), Varanasi',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-roorkee',
-        name: 'Indian Institute of Technology, Roorkee',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
-    {
-        id: 'iit-kharagpur',
-        name: 'Indian Institute of Technology, Kharagpur',
-        courses: ['B.Tech', 'M.Tech', 'Ph.D'],
-        facilities: ['Hostel', 'Library', 'Lab', 'Wifi'],
-        medium: 'English'
-    },
+    // IITs
+    { id: 'iit-jodhpur', name: 'Indian Institute of Technology, Jodhpur', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-tirupati', name: 'Indian Institute of Technology, Tirupati', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-guwahati', name: 'Indian Institute of Technology, Guwahati', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-patna', name: 'Indian Institute of Technology, Patna', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-bhilai', name: 'Indian Institute of Technology, Bhilai', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-delhi', name: 'Indian Institute of Technology, Delhi', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-goa', name: 'Indian Institute of Technology, Goa', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-gandhinagar', name: 'Indian Institute of Technology, Gandhinagar', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-mandi', name: 'Indian Institute of Technology, Mandi', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-jammu', name: 'Indian Institute of Technology, Jammu', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-dhanbad', name: 'Indian Institute of Technology (ISM), Dhanbad', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-dharwad', name: 'Indian Institute of Technology, Dharwad', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-palakkad', name: 'Indian Institute of Technology, Palakkad', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-indore', name: 'Indian Institute of Technology, Indore', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-bombay', name: 'Indian Institute of Technology, Bombay', courses: ['B.Tech', 'B.Des', 'M.Sc'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-bhubaneswar', name: 'Indian Institute of Technology, Bhubaneswar', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-hyderabad', name: 'Indian Institute of Technology, Hyderabad', courses: ['B.Tech', 'MS by Research', 'Ph.D'], facilities: ['Hostel', 'Library', 'Wifi'], medium: 'English' },
+    { id: 'iit-ropar', name: 'Indian Institute of Technology, Ropar', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-madras', name: 'Indian Institute of Technology, Madras', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-kanpur', name: 'Indian Institute of Technology, Kanpur', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-bhu', name: 'Indian Institute of Technology (BHU), Varanasi', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-roorkee', name: 'Indian Institute of Technology, Roorkee', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+    { id: 'iit-kharagpur', name: 'Indian Institute of Technology, Kharagpur', courses: ['B.Tech', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab', 'Wifi'], medium: 'English' },
+
+    // NITs
+    { id: 'nit-trichy', name: 'National Institute of Technology, Tiruchirappalli', courses: ['B.Tech', 'B.Arch', 'M.Tech'], facilities: ['Hostel', 'Library', 'Sports'], medium: 'English' },
+    { id: 'nit-surathkal', name: 'National Institute of Technology, Surathkal', courses: ['B.Tech', 'M.Tech', 'MCA'], facilities: ['Hostel', 'Library', 'Beach'], medium: 'English' },
+    { id: 'nit-warangal', name: 'National Institute of Technology, Warangal', courses: ['B.Tech', 'M.Sc', 'MBA'], facilities: ['Hostel', 'Library', 'Gym'], medium: 'English' },
+    { id: 'nit-rourkela', name: 'National Institute of Technology, Rourkela', courses: ['B.Tech', 'Integrated M.Sc', 'Ph.D'], facilities: ['Hostel', 'Library', 'Pool'], medium: 'English' },
+    { id: 'nit-calicut', name: 'National Institute of Technology, Calicut', courses: ['B.Tech', 'B.Arch', 'MBA'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
+
+    // IIITs
+    { id: 'iiit-allahabad', name: 'Indian Institute of Information Technology, Allahabad', courses: ['B.Tech (IT)', 'B.Tech (EC)', 'MBA'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
+    { id: 'iiit-gwalior', name: 'Indian Institute of Information Technology and Management, Gwalior', courses: ['IPG (B.Tech+M.Tech)', 'IPG (B.Tech+MBA)'], facilities: ['Hostel', 'Library', 'Sports'], medium: 'English' },
+    { id: 'iiit-lucknow', name: 'Indian Institute of Information Technology, Lucknow', courses: ['B.Tech (CS)', 'B.Tech (AI)'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
+
+    // AIIMS
+    { id: 'aiims-delhi', name: 'All India Institute of Medical Sciences, Delhi', courses: ['MBBS', 'B.Sc (Hons)', 'MD/MS'], facilities: ['Hostel', 'Library', 'Hospital'], medium: 'English' },
+    { id: 'aiims-bhopal', name: 'All India Institute of Medical Sciences, Bhopal', courses: ['MBBS', 'B.Sc (Nursing)'], facilities: ['Hostel', 'Library', 'Hospital'], medium: 'English' },
+    { id: 'aiims-jodhpur', name: 'All India Institute of Medical Sciences, Jodhpur', courses: ['MBBS', 'MD/MS'], facilities: ['Hostel', 'Library', 'Hospital'], medium: 'English' },
+
+    // Others
+    { id: 'iisc-bangalore', name: 'Indian Institute of Science, Bangalore', courses: ['B.S. (Research)', 'M.Tech', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
+    { id: 'isi-kolkata', name: 'Indian Statistical Institute, Kolkata', courses: ['B.Stat', 'B.Math', 'M.S.'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
+    { id: 'niser-bhubaneswar', name: 'National Institute of Science Education and Research, Bhubaneswar', courses: ['Integrated M.Sc'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
+    { id: 'iiser-pune', name: 'Indian Institute of Science Education and Research, Pune', courses: ['BS-MS Dual Degree', 'Ph.D'], facilities: ['Hostel', 'Library', 'Lab'], medium: 'English' },
 ];
 
 const facilityIcons: { [key: string]: React.ReactElement } = {
@@ -192,6 +78,11 @@ const facilityIcons: { [key: string]: React.ReactElement } = {
   Library: <Library className="h-4 w-4" />,
   Lab: <Microscope className="h-4 w-4" />,
   Wifi: <Wifi className="h-4 w-4" />,
+  Hospital: <Badge>Hospital</Badge>,
+  Sports: <Badge>Sports</Badge>,
+  Beach: <Badge>Beach</Badge>,
+  Gym: <Badge>Gym</Badge>,
+  Pool: <Badge>Pool</Badge>,
 };
 
 export default function CollegesPage() {
