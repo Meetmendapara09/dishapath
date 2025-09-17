@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -17,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '@/components/logo';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 const keyFeatures = [
   {
@@ -51,10 +53,30 @@ const keyFeatures = [
   },
 ];
 
+const testimonials = [
+  {
+    quote: "Disha Path cleared all my confusion after 12th grade. I finally understood which course was right for me and found a great government college nearby. It's a game-changer!",
+    name: "Priya S.",
+    role: "Class 12 Student, Jaipur",
+    avatarId: "testimonial-avatar-1"
+  },
+  {
+    quote: "The AI counselor is amazing! It answered all my questions about different entrance exams and helped me create a study plan. I feel much more confident now.",
+    name: "Rohan M.",
+    role: "Aspiring Engineer, Bangalore",
+    avatarId: "testimonial-avatar-2"
+  },
+  {
+    quote: "As a parent, I was worried about my daughter's career choices. Disha Path gave us a clear roadmap and helped us explore options we hadn't even considered. Highly recommended!",
+    name: "Anjali D.",
+    role: "Parent, Mumbai",
+    avatarId: "testimonial-avatar-3"
+  }
+];
+
 
 export default function LandingPage() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-students');
-  const testimonialAvatar = PlaceHolderImages.find(p => p.id === 'testimonial-avatar-1');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -166,22 +188,41 @@ export default function LandingPage() {
         {/* Testimonial Section */}
         <section className="bg-primary/5 w-full py-16 md:py-24 lg:py-32">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center max-w-3xl mx-auto">
-                    <Quote className="h-10 w-10 text-accent mx-auto" />
-                    <blockquote className="mt-4 text-2xl font-semibold leading-snug tracking-tight text-foreground">
-                        "Disha Path cleared all my confusion after 12th grade. I finally understood which course was right for me and found a great government college nearby. It's a game-changer!"
-                    </blockquote>
-                    <div className="mt-8 flex items-center justify-center gap-4">
-                        {testimonialAvatar && <Avatar className="h-12 w-12">
-                          <AvatarImage src={testimonialAvatar.imageUrl} alt="Priya S." data-ai-hint={testimonialAvatar.imageHint} />
-                          <AvatarFallback>PS</AvatarFallback>
-                        </Avatar>}
-                        <div>
-                        <p className="font-semibold text-lg">Priya S.</p>
-                        <p className="text-sm text-foreground/80">Class 12 Student, Jaipur</p>
-                        </div>
-                    </div>
-                </div>
+                 <Carousel
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    className="w-full max-w-4xl mx-auto"
+                >
+                    <CarouselContent>
+                        {testimonials.map((testimonial, index) => {
+                            const avatar = PlaceHolderImages.find(p => p.id === testimonial.avatarId);
+                            return (
+                                <CarouselItem key={index}>
+                                    <div className="text-center p-4">
+                                        <Quote className="h-10 w-10 text-accent mx-auto" />
+                                        <blockquote className="mt-4 text-2xl font-semibold leading-snug tracking-tight text-foreground">
+                                           "{testimonial.quote}"
+                                        </blockquote>
+                                        <div className="mt-8 flex items-center justify-center gap-4">
+                                            {avatar && <Avatar className="h-12 w-12">
+                                            <AvatarImage src={avatar.imageUrl} alt={testimonial.name} data-ai-hint={avatar.imageHint} />
+                                            <AvatarFallback>{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                            </Avatar>}
+                                            <div>
+                                            <p className="font-semibold text-lg">{testimonial.name}</p>
+                                            <p className="text-sm text-foreground/80">{testimonial.role}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CarouselItem>
+                            );
+                        })}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
             </div>
         </section>
         

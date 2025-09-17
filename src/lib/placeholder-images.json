@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -11,6 +12,18 @@
       "description": "Avatar for a student testimonial.",
       "imageUrl": "https://picsum.photos/seed/102/40/40",
       "imageHint": "indian student"
+    },
+    {
+      "id": "testimonial-avatar-2",
+      "description": "Avatar for a second student testimonial.",
+      "imageUrl": "https://picsum.photos/seed/104/40/40",
+      "imageHint": "male student"
+    },
+    {
+      "id": "testimonial-avatar-3",
+      "description": "Avatar for a third student testimonial.",
+      "imageUrl": "https://picsum.photos/seed/105/40/40",
+      "imageHint": "female student glasses"
     },
     {
       "id": "user-avatar",
