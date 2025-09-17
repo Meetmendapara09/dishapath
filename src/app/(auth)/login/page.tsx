@@ -26,6 +26,7 @@ const loginSchema = z.object({
 });
 
 const registerSchema = z.object({
+  displayName: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
@@ -49,7 +50,7 @@ export default function LoginPage() {
 
   const registerForm = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { email: '', password: '', confirmPassword: '' },
+    defaultValues: { displayName: '', email: '', password: '', confirmPassword: '' },
   });
 
   const handleAuthError = (error: AuthError) => {
@@ -89,6 +90,9 @@ export default function LoginPage() {
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
+        displayName: values.displayName,
+        class: '',
+        academicInterests: '',
         role: "student", // default role
         createdAt: new Date(),
       });
@@ -166,6 +170,19 @@ export default function LoginPage() {
               <CardContent>
                 <Form {...registerForm}>
                   <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                     <FormField
+                      control={registerForm.control}
+                      name="displayName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Priya Sharma" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={registerForm.control}
                       name="email"
