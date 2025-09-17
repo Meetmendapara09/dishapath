@@ -170,7 +170,6 @@ export async function careerCounselorChat(
   userProfile?: z.infer<typeof CareerCounselorInputSchema>['userProfile'],
 ): Promise<ReadableStream<string>> {
   const {stream, response} = await ai.generateStream({
-    model: 'googleai/gemini-2.5-flash',
     prompt: await prompt({history, message, userProfile}),
     history,
   });
