@@ -118,11 +118,6 @@ const prompt = ai.definePrompt({
 export async function findCollegesFlow(
   input: FindCollegesInput
 ): Promise<FindCollegesOutput> {
-  const llmResponse = await ai.generate({
-    model: 'googleai/gemini-2.5-flash',
-    prompt,
-    input,
-    output: {schema: FindCollegesOutputSchema},
-  });
-  return llmResponse.output!;
+  const {output} = await prompt(input);
+  return output!;
 }

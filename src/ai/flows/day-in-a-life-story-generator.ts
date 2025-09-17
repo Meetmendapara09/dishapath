@@ -56,12 +56,7 @@ const dayInLifeStoryFlow = ai.defineFlow(
     outputSchema: DayInLifeStoryOutputSchema,
   },
   async input => {
-    const {output} = await ai.generate({
-      model: 'googleai/gemini-2.5-flash',
-      prompt,
-      input,
-      output: {schema: DayInLifeStoryOutputSchema},
-    });
+    const {output} = await prompt(input);
     return output!;
   }
 );
