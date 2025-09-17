@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Lightbulb, BookOpen, Building, Trophy, ClipboardEdit, MessageSquare, Library } from 'lucide-react';
-import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
+import { Home, Lightbulb, BookOpen, Building, Trophy, ClipboardEdit, MessageSquare, Library, Shield } from 'lucide-react';
+import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarSeparator } from '@/components/ui/sidebar';
+import { useAuth } from '@/contexts/auth-context';
+
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home, tooltip: 'Dashboard' },
@@ -16,8 +18,13 @@ const navItems = [
   { href: '/materials', label: 'Study Materials', icon: Library, tooltip: 'Study Materials' },
 ];
 
+const adminNavItems = [
+    { href: '/admin', label: 'Admin', icon: Shield, tooltip: 'Admin Dashboard' },
+]
+
 export function AppNav() {
   const pathname = usePathname();
+  const { isAdmin } = useAuth();
 
   return (
     <SidebarMenu>
@@ -31,6 +38,21 @@ export function AppNav() {
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
+      {isAdmin && (
+        <>
+            <SidebarSeparator />
+            {adminNavItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton asChild isActive={pathname.startsWith(item.href)} tooltip={item.tooltip}>
+                    <Link href={item.href}>
+                    <item.icon />
+                    {item.label}
+                    </Link>
+                </SidebarMenuButton>
+                </SidebarMenuItem>
+            ))}
+        </>
+      )}
     </SidebarMenu>
   );
 }
