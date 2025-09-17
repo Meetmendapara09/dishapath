@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -14,7 +15,7 @@ import {
 import { Logo } from '@/components/logo';
 import { AppNav } from '@/components/app-nav';
 import { Button } from '@/components/ui/button';
-import { Bell, LogOut, User } from 'lucide-react';
+import { Bell, LogOut, User, Download } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,7 @@ import {
 import { auth } from '@/lib/firebase';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { usePwaInstall } from '@/hooks/use-pwa-install';
 
 
 export default function AppLayout({
@@ -35,6 +37,7 @@ export default function AppLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { canInstall, installPwa } = usePwaInstall();
   
   useEffect(() => {
     if (!loading && !user) {
@@ -92,6 +95,12 @@ export default function AppLayout({
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
+                {canInstall && (
+                    <DropdownMenuItem onClick={installPwa}>
+                        <Download className="mr-2 h-4 w-4" />
+                        <span>Install App</span>
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
