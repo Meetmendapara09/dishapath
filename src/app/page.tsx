@@ -12,6 +12,9 @@ import {
   Trophy,
   ClipboardEdit,
   MessageSquare,
+  CheckCircle,
+  Target,
+  GraduationCap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -79,7 +82,7 @@ export default function LandingPage() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-students');
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
       <header className="container mx-auto h-20 flex items-center justify-between px-4 md:px-6 sticky top-0 z-50 bg-background/80 backdrop-blur-sm">
         <Logo />
         <Button asChild>
@@ -95,10 +98,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-4xl font-headline font-bold tracking-tight sm:text-5xl md:text-6xl text-primary leading-tight">
-                Your Future, Illuminated.
+                Chart Your Course to a Bright Future.
               </h1>
               <p className="max-w-[600px] mx-auto lg:mx-0 text-lg text-foreground/80 md:text-xl">
-                Lakshya360 is your AI-powered copilot for navigating the complex world of education and careers in India. Discover your perfect path, today.
+                Lakshya360 is your AI-powered copilot for navigating the complex world of Indian education and careers. Discover your perfect path, from 10th grade to your first job.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button size="lg" asChild>
@@ -127,30 +130,45 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* How it works Section */}
+         {/* Why Choose Us Section */}
         <section className="bg-primary/5 w-full py-16 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <div className="space-y-2">
-                <p className="font-semibold text-primary">HOW IT WORKS</p>
-                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">Your 3-Step Guide to Clarity</h2>
+                <p className="font-semibold text-primary">WHY LAKSHYA360?</p>
+                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">A Smarter Way to Plan Your Career</h2>
+                <p className="max-w-[900px] text-foreground/80 md:text-xl/relaxed">
+                    We focus on what truly matters for Indian students.
+                </p>
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-10 md:grid-cols-3 md:gap-12">
-              <div className="flex flex-col items-center text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-2xl shadow-lg border-4 border-background">1</div>
-                <h3 className="text-xl font-headline font-bold mt-6">Take the Quiz</h3>
-                <p className="text-foreground/80 mt-2">Our smart quiz identifies your unique interests and strengths.</p>
+              <div className="flex flex-col items-center text-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-background text-primary shadow-md border">
+                    <Sparkles className="h-8 w-8" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-headline font-bold">AI-Powered Guidance</h3>
+                    <p className="text-foreground/80 mt-2">Our advanced AI provides personalized recommendations for courses, colleges, and careers based on your unique profile.</p>
+                </div>
               </div>
-               <div className="flex flex-col items-center text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-2xl shadow-lg border-4 border-background">2</div>
-                <h3 className="text-xl font-headline font-bold mt-6">Get AI Recommendations</h3>
-                <p className="text-foreground/80 mt-2">Receive personalized suggestions for courses, careers, and colleges.</p>
+               <div className="flex flex-col items-center text-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-background text-primary shadow-md border">
+                    <Target className="h-8 w-8" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-headline font-bold">Focus on Govt. Colleges</h3>
+                    <p className="text-foreground/80 mt-2">We specialize in providing information on government colleges, scholarships, and exams across India.</p>
+                </div>
               </div>
-               <div className="flex flex-col items-center text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-2xl shadow-lg border-4 border-background">3</div>
-                <h3 className="text-xl font-headline font-bold mt-6">Explore & Decide</h3>
-                <p className="text-foreground/80 mt-2">Use our rich database to research and finalize your best options.</p>
+               <div className="flex flex-col items-center text-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-background text-primary shadow-md border">
+                    <GraduationCap className="h-8 w-8" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-headline font-bold">End-to-End Support</h3>
+                    <p className="text-foreground/80 mt-2">From career exploration after 10th grade to finding the right scholarship, we guide you at every step.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -227,21 +245,26 @@ export default function LandingPage() {
         </section>
         
         {/* Final CTA Section */}
-        <section className="w-full">
-            <div className="container mx-auto px-4 md:px-6 py-16 md:py-24 lg:py-32 text-center">
-                <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl text-primary">Ready to Find Your Future?</h2>
-                <p className="mx-auto max-w-[600px] text-foreground/80 md:text-xl mt-4">
-                    Take the first step towards a successful career. It's free, easy, and could change your life.
-                </p>
-                <Button size="lg" className="mt-8" asChild>
-                    <Link href="/login">
-                        Get Started Now
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                </Button>
+        <section className="w-full py-16 md:py-24">
+          <div className="container mx-auto">
+            <div className="bg-gradient-to-r from-primary to-accent/80 rounded-2xl p-12 text-center text-primary-foreground shadow-xl">
+              <Sparkles className="h-12 w-12 mx-auto mb-4" />
+              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Ready to Find Your Future?
+              </h2>
+              <p className="mx-auto max-w-[600px] text-primary-foreground/80 md:text-xl mt-4">
+                Take the first step towards a successful career. It's free, easy, and could change your life.
+              </p>
+              <Button size="lg" variant="secondary" className="mt-8" asChild>
+                <Link href="/login">
+                  Get Started Now for Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
             </div>
+          </div>
         </section>
+
       </main>
 
       <footer className="bg-background border-t">
