@@ -56,6 +56,22 @@ const sampleCareers: Course[] = [
   },
   {
     stream: "Science",
+    degree: "Bachelor of Architecture (B.Arch)",
+    iconName: "PenTool",
+    paths: ["Architect", "Urban Planner", "Interior Designer", "Landscape Architect"],
+    industries: ["Construction", "Real Estate", "Urban Planning", "Interior Design"],
+    further_study: ["M.Arch", "Master's in Urban Planning"]
+  },
+   {
+    stream: "Science",
+    degree: "Bachelor of Pharmacy (B.Pharm)",
+    iconName: "Microscope",
+    paths: ["Pharmacist", "Clinical Researcher", "Drug Inspector", "Medical Representative"],
+    industries: ["Pharmaceuticals", "Healthcare", "Research", "Regulatory Bodies"],
+    further_study: ["M.Pharm", "Pharm.D", "MBA"]
+  },
+  {
+    stream: "Science",
     degree: "B.Sc in Physics",
     iconName: "Microscope",
     paths: ["Research Scientist", "Data Analyst", "Lab Technician", "Science Journalist"],
@@ -79,6 +95,14 @@ const sampleCareers: Course[] = [
     industries: ["Retail", "Marketing & Advertising", "IT", "Startups"],
     further_study: ["MBA", "PGDM", "Master's in Management"]
   },
+   {
+    stream: "Commerce",
+    degree: "BBA LLB (Integrated Law)",
+    iconName: "Briefcase",
+    paths: ["Corporate Lawyer", "Legal Advisor", "Litigation Lawyer", "Compliance Officer"],
+    industries: ["Law Firms", "Corporate Legal Depts.", "Consulting", "Government"],
+    further_study: ["LLM", "MBA"]
+  },
   // Arts Stream
   {
     stream: "Arts",
@@ -95,6 +119,22 @@ const sampleCareers: Course[] = [
     paths: ["Graphic Designer", "Illustrator", "Animator", "Art Director"],
     industries: ["Advertising", "Media & Entertainment", "Gaming", "Fashion"],
     further_study: ["Master of Fine Arts (MFA)", "PG Diploma in Design"]
+  },
+  {
+    stream: "Arts",
+    degree: "Bachelor of Design (B.Des)",
+    iconName: "Palette",
+    paths: ["UI/UX Designer", "Product Designer", "Fashion Designer", "Automobile Designer"],
+    industries: ["IT/Software", "Product Design", "Fashion", "Automobile"],
+    further_study: ["M.Des", "MBA in Design Management"]
+  },
+   {
+    stream: "Arts",
+    degree: "B.A. in Economics",
+    iconName: "BarChart",
+    paths: ["Economist", "Data Analyst", "Financial Consultant", "Policy Analyst"],
+    industries: ["Banking & Finance", "Consulting", "Research", "Government"],
+    further_study: ["M.A. in Economics", "MBA", "M.Sc in Data Science"]
   },
    {
     stream: "Arts",
@@ -214,7 +254,7 @@ export default function CareersPage() {
         <p className="text-muted-foreground">Discover where different degrees can take you. Click on a course to see the possibilities.</p>
       </div>
       <Tabs defaultValue={streams[0]} className="w-full">
-        <TabsList>
+        <TabsList className="flex flex-wrap h-auto justify-start">
           {streams.map(stream => (
             <TabsTrigger key={stream} value={stream}>{stream}</TabsTrigger>
           ))}
