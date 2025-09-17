@@ -48,6 +48,38 @@ const sampleCareers: Course[] = [
   },
   {
     stream: "Science",
+    degree: "B.Tech in Electrical & Electronics Engineering",
+    iconName: "Wrench",
+    paths: ["Hardware Engineer", "VLSI Designer", "Power Systems Engineer", "IoT Engineer"],
+    industries: ["Semiconductors", "Power Generation", "Telecommunications", "Consumer Electronics"],
+    further_study: ["M.Tech in VLSI", "MS in Embedded Systems"]
+  },
+  {
+    stream: "Science",
+    degree: "B.Tech in Civil Engineering",
+    iconName: "Wrench",
+    paths: ["Structural Engineer", "Construction Manager", "Urban Planner", "Geotechnical Engineer"],
+    industries: ["Infrastructure", "Real Estate", "Government (PWD, NHAI)", "Consulting"],
+    further_study: ["M.Tech in Structural Engg", "MBA in Construction Management"]
+  },
+  {
+    stream: "Science",
+    degree: "B.Tech in Chemical Engineering",
+    iconName: "Microscope",
+    paths: ["Process Engineer", "Chemical Plant Manager", "Materials Scientist", "Petroleum Engineer"],
+    industries: ["Chemicals & Petrochemicals", "Pharmaceuticals", "FMCG", "Energy (Oil & Gas)"],
+    further_study: ["M.Tech", "PhD in Material Science"]
+  },
+   {
+    stream: "Science",
+    degree: "B.Tech in Naval Architecture",
+    iconName: "Wrench",
+    paths: ["Naval Architect", "Shipbuilding Engineer", "Marine Surveyor", "Offshore Engineer"],
+    industries: ["Shipyards", "Marine Design Firms", "Shipping Companies", "Defense (Navy)"],
+    further_study: ["M.Tech in Marine Engineering", "Master's in Ocean Engineering"]
+  },
+  {
+    stream: "Science",
     degree: "MBBS (Bachelor of Medicine, Bachelor of Surgery)",
     iconName: "Microscope",
     paths: ["Doctor (General Physician)", "Surgeon", "Specialist (e.g., Cardiologist)", "Medical Researcher"],
