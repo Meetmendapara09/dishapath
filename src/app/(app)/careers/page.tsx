@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool } from "lucide-react"
+import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench } from "lucide-react"
 
 const careerData = {
   Science: [
@@ -26,6 +26,13 @@ const careerData = {
       paths: ["Botanist", "Zoologist", "Environmental Consultant", "Pharmacist"],
       industries: ["Pharmaceuticals", "Agriculture", "Environmental Conservation", "Biotechnology"],
       further_study: ["M.Sc. Biology/Biotechnology", "MBBS (after qualifying NEET)", "Ph.D."],
+    },
+    {
+      degree: "B.Tech in Mechanical Engineering",
+      icon: <Wrench className="h-5 w-5 text-primary" />,
+      paths: ["Mechanical Engineer", "Robotics Engineer", "Automotive Designer"],
+      industries: ["Automobile", "Aerospace", "Manufacturing", "Robotics"],
+      further_study: ["M.Tech", "MBA", "Ph.D. in Robotics"],
     },
   ],
   Commerce: [
@@ -59,7 +66,37 @@ const careerData = {
       industries: ["Government Services", "Museums & Heritage Sites", "Tourism", "Research"],
       further_study: ["M.A. in History", "Ph.D.", "Diploma in Museology"],
     },
+    {
+      degree: "Bachelor of Fine Arts (BFA)",
+      icon: <Palette className="h-5 w-5 text-primary" />,
+      paths: ["Graphic Designer", "Animator", "UI/UX Designer", "Art Director"],
+      industries: ["Advertising", "Media", "Gaming", "Web Design"],
+      further_study: ["Master of Fine Arts (MFA)", "Ph.D. in Arts"],
+    },
   ],
+  Vocational: [
+    {
+        degree: "Diploma in Web Development",
+        icon: <PenTool className="h-5 w-5 text-primary" />,
+        paths: ["Front-end Developer", "Back-end Developer", "Full-stack Developer"],
+        industries: ["IT & Software", "E-commerce", "Startups"],
+        further_study: ["B.Voc in Software Development", "Advanced Certifications"],
+    },
+    {
+        degree: "Diploma in Digital Marketing",
+        icon: <BarChart className="h-5 w-5 text-primary" />,
+        paths: ["SEO Specialist", "Social Media Manager", "Content Marketer"],
+        industries: ["Marketing & Advertising", "E-commerce", "Any business with online presence"],
+        further_study: ["Advanced digital marketing certifications", "BBA in Marketing"],
+    },
+    {
+        degree: "ITI in Electrician Trade",
+        icon: <Wrench className="h-5 w-5 text-primary" />,
+        paths: ["Electrician", "Wireman", "Electronics Technician"],
+        industries: ["Construction", "Manufacturing", "Power Sector", "Railways"],
+        further_study: ["Diploma in Electrical Engineering (Polytechnic)"],
+    },
+  ]
 };
 
 export default function CareersPage() {
@@ -70,10 +107,11 @@ export default function CareersPage() {
         <p className="text-muted-foreground">Discover where different degrees can take you. Click on a course to see the possibilities.</p>
       </div>
       <Tabs defaultValue="Science" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="Science">Science</TabsTrigger>
           <TabsTrigger value="Commerce">Commerce</TabsTrigger>
           <TabsTrigger value="Arts">Arts</TabsTrigger>
+          <TabsTrigger value="Vocational">Vocational</TabsTrigger>
         </TabsList>
         
         {Object.entries(careerData).map(([stream, courses]) => (
