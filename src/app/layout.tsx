@@ -7,6 +7,7 @@ import { AuthProvider } from '@/contexts/auth-context';
 export const metadata: Metadata = {
   title: 'Disha Path',
   description: 'A personalized career and education advisor for students.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -27,7 +28,4 @@ export default function RootLayout({
           {children}
           <Toaster />
         </AuthProvider>
-      </body>
-    </html>
-  );
-}
+      
