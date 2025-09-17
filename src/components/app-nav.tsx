@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Lightbulb, BookOpen, Building, Trophy, ClipboardEdit, MessageSquare, Library, Shield } from 'lucide-react';
+import { Home, Lightbulb, BookOpen, Building, Trophy, ClipboardEdit, MessageSquare, Library, Shield, BrainCircuit } from 'lucide-react';
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarSeparator } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/auth-context';
 
@@ -16,6 +16,7 @@ const navItems = [
   { href: '/scholarships', label: 'Scholarships', icon: Trophy, tooltip: 'Scholarships' },
   { href: '/exams', label: 'Exams', icon: ClipboardEdit, tooltip: 'Exams' },
   { href: '/materials', label: 'Study Materials', icon: Library, tooltip: 'Study Materials' },
+  { href: '/future-tech', label: 'Future Tech', icon: BrainCircuit, tooltip: 'Future Tech' },
 ];
 
 const adminNavItems = [
