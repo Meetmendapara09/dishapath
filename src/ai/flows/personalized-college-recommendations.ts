@@ -24,7 +24,7 @@ const PersonalizedCollegeRecommendationsInputSchema = z.object({
     .describe(
       'The results of the aptitude quiz taken by the student, including interests, strengths and personality traits.'
     ),
-  careerGoals: z.string().describe('The career goals of the student, if any.'),
+  careerGoals: z.string().optional().describe('The career goals of the student, if any.'),
   location: z.string().describe('The current location of the student.'),
 });
 

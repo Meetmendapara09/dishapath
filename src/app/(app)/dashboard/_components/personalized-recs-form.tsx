@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,6 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Sparkles, School, Briefcase, GraduationCap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/auth-context';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 const formSchema = z.object({
   age: z.coerce.number().min(14, 'Age must be at least 14').max(25, 'Age must be at most 25'),
@@ -26,6 +29,7 @@ const formSchema = z.object({
 });
 
 export function PersonalizedRecsForm() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<PersonalizedCollegeRecommendationsOutput | null>(null);
   const { toast } = useToast();
@@ -42,6 +46,25 @@ export function PersonalizedRecsForm() {
       location: '',
     },
   });
+
+  useEffect(() => {
+    async function fetchProfile() {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          // Pre-fill form with user data from Firestore
+          form.reset({
+            ...form.getValues(),
+            class: userData.class || form.getValues().class,
+            academicInterests: userData.academicInterests || form.getValues().academicInterests,
+          });
+        }
+      }
+    }
+    fetchProfile();
+  }, [user, form]);
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -107,7 +130,7 @@ export function PersonalizedRecsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Class</FormLabel>
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select class" />
