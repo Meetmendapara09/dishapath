@@ -26,6 +26,13 @@ const sampleMaterials: Material[] = [
         link: 'https://ndl.iitkgp.ac.in/',
         category: 'links'
     },
+     {
+        id: 'nptel',
+        title: 'NPTEL',
+        description: 'National Programme on Technology Enhanced Learning. A huge repository of free video lectures on engineering, science and humanities from IITs and IISc.',
+        link: 'https://nptel.ac.in/',
+        category: 'links'
+    },
     {
         id: 'acm-dl',
         title: 'ACM Digital Library',
@@ -40,8 +47,22 @@ const sampleMaterials: Material[] = [
         link: 'https://www.ncbi.nlm.nih.gov/pmc/',
         category: 'links'
     },
+    {
+        id: 'shodhganga',
+        title: 'Shodhganga',
+        description: 'A reservoir of Indian theses and dissertations. An excellent resource for research and understanding academic work in India.',
+        link: 'https://shodhganga.inflibnet.ac.in/',
+        category: 'links'
+    },
 
     // Study Guides
+    {
+        id: 'ncert-books',
+        title: 'NCERT E-Books (Class I-XII)',
+        description: 'Official NCERT textbooks, which form the foundation for many competitive exams like JEE, NEET, and UPSC.',
+        link: 'https://ncert.nic.in/textbook.php',
+        category: 'guides'
+    },
     {
         id: 'const-india',
         title: 'Constitution of India',
@@ -49,11 +70,11 @@ const sampleMaterials: Material[] = [
         link: 'https://www.india.gov.in/my-government/constitution-india/constitution-india-full-text',
         category: 'guides'
     },
-    {
-        id: 'ncert-books',
-        title: 'NCERT E-Books (Class I-XII)',
-        description: 'Official NCERT textbooks, which form the foundation for many competitive exams like JEE, NEET, and UPSC.',
-        link: 'https://ncert.nic.in/textbook.php',
+     {
+        id: 'india-year-book',
+        title: 'India Year Book',
+        description: 'A comprehensive digest of the country\'s progress in different fields. A must-read for civil services aspirants.',
+        link: 'https://www.publicationsdivision.nic.in/journals/index.php?route=product/category&path=102_104',
         category: 'guides'
     },
 
@@ -77,6 +98,20 @@ const sampleMaterials: Material[] = [
         title: 'CUET (UG) Practice Papers',
         description: 'Sample papers for the Common University Entrance Test, used for admission to various undergraduate programs.',
         link: 'https://cuet.samarth.ac.in/index.php/site/syllabus',
+        category: 'papers'
+    },
+     {
+        id: 'clat-papers',
+        title: 'CLAT Previous Year Papers',
+        description: 'Previous year question papers for the Common Law Admission Test for aspirants of National Law Universities.',
+        link: 'https://consortiumofnlus.ac.in/previous-question-papers/',
+        category: 'papers'
+    },
+     {
+        id: 'upsc-papers',
+        title: 'UPSC Civil Services Papers',
+        description: 'Previous year question papers for the prestigious Civil Services Examination conducted by UPSC.',
+        link: 'https://upsc.gov.in/examinations/previous-question-papers',
         category: 'papers'
     },
 ];
