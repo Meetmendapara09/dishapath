@@ -111,21 +111,17 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-10 md:grid-cols-3 md:gap-12">
-              <div className="relative flex flex-col items-center text-center">
-                <div className="absolute top-8 left-1/2 -ml-0.5 w-0.5 h-16 bg-border/70 hidden md:block"></div>
+              <div className="flex flex-col items-center text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-2xl shadow-lg border-4 border-background">1</div>
                 <h3 className="text-xl font-headline font-bold mt-6">Take the Quiz</h3>
                 <p className="text-foreground/80 mt-2">Our smart quiz identifies your unique interests and strengths.</p>
               </div>
-               <div className="relative flex flex-col items-center text-center">
-                 <div className="absolute top-8 left-0 -ml-0.5 w-1/2 h-0.5 bg-border/70 hidden md:block"></div>
-                 <div className="absolute top-8 right-0 -ml-0.5 w-1/2 h-0.5 bg-border/70 hidden md:block"></div>
+               <div className="flex flex-col items-center text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-2xl shadow-lg border-4 border-background">2</div>
                 <h3 className="text-xl font-headline font-bold mt-6">Get AI Recommendations</h3>
                 <p className="text-foreground/80 mt-2">Receive personalized suggestions for courses, careers, and colleges.</p>
               </div>
-               <div className="relative flex flex-col items-center text-center">
-                <div className="absolute top-8 right-1/2 -mr-0.5 w-0.5 h-16 bg-border/70 hidden md:block"></div>
+               <div className="flex flex-col items-center text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-2xl shadow-lg border-4 border-background">3</div>
                 <h3 className="text-xl font-headline font-bold mt-6">Explore & Decide</h3>
                 <p className="text-foreground/80 mt-2">Use our rich database to research and finalize your best options.</p>
