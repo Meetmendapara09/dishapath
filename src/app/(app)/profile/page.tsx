@@ -58,6 +58,8 @@ export default function ProfilePage() {
            form.reset({
             displayName: user.displayName || '',
             email: user.email || '',
+            class: '',
+            academicInterests: '',
           });
         }
         setLoading(false);
