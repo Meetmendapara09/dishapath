@@ -6,9 +6,11 @@ import {Button} from '@/components/ui/button';
 import {Send, User, Bot, Sparkles, Loader2} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import { careerCounselorChat } from '@/ai/flows/career-counselor-chat';
+import { saveChatHistory } from '@/ai/flows/save-chat-history';
 import { useAuth } from '@/contexts/auth-context';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 type UserProfile = {
   displayName?: string;
@@ -28,6 +30,7 @@ export function Chat() {
   const [streaming, setStreaming] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | undefined>();
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -54,6 +57,23 @@ export function Chat() {
     scrollToBottom();
   }, [messages]);
 
+  const handleSaveChat = async (updatedMessages: Message[]) => {
+    if (!user) return;
+    try {
+      await saveChatHistory({
+        userId: user.uid,
+        messages: updatedMessages,
+      });
+    } catch (error) {
+        console.error("Failed to save chat history:", error);
+        toast({
+            variant: 'destructive',
+            title: 'Save Error',
+            description: "Could not save your chat session."
+        })
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -79,10 +99,17 @@ export function Chat() {
       
       let accumulatedContent = '';
       const assistantMessage: Message = { role: 'assistant', content: '' };
-      setMessages(prev => [...prev, assistantMessage]);
+      
+      // Add the empty assistant message to start rendering it
+      let finalMessages: Message[] = [];
+      setMessages(prev => {
+          finalMessages = [...prev, assistantMessage];
+          return finalMessages;
+      });
 
       const reader = stream.getReader();
       const decoder = new TextDecoder();
+      let finalContent = '';
 
       while (true) {
           const { value, done } = await reader.read();
@@ -90,12 +117,20 @@ export function Chat() {
               break;
           }
           accumulatedContent += decoder.decode(value, { stream: true });
+          finalContent = accumulatedContent;
           setMessages(prev => {
               const updatedMessages = [...prev];
               updatedMessages[updatedMessages.length - 1] = { ...assistantMessage, content: accumulatedContent };
+              finalMessages = updatedMessages;
               return updatedMessages;
           });
       }
+      
+      // Save the complete conversation history
+      const finalAssistantMessage: Message = { role: 'assistant', content: finalContent };
+      const conversationToSave = [...newMessages, finalAssistantMessage];
+      await handleSaveChat(conversationToSave);
+
     } catch (error) {
         console.error("Error streaming chat:", error);
         const errorMessage: Message = {
@@ -116,11 +151,10 @@ export function Chat() {
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
             <Sparkles className="h-12 w-12 mb-4 text-primary" />
             <p className="text-lg font-semibold">Welcome to the AI Counselor!</p>
-            <p>You can ask me questions like:</p>
+            <p>Your conversations will be saved automatically.</p>
             <ul className="mt-2 text-sm list-disc list-inside">
               <li>"What are the career options after 12th science?"</li>
               <li>"Tell me about the CUET exam."</li>
-              <li>"What is the difference between B.Tech and B.E.?"</li>
             </ul>
           </div>
         )}
