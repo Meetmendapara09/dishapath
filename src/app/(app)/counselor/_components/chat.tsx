@@ -6,7 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Send, User, Bot, Sparkles, Loader2} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import { careerCounselorChat } from '@/ai/flows/career-counselor-chat';
-import { saveChatHistory } from '@/ai/flows/save-chat-history';
+import { saveChatHistory, SaveChatHistoryInput } from '@/ai/flows/save-chat-history';
 import { useAuth } from '@/contexts/auth-context';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -60,9 +60,14 @@ export function Chat() {
   const handleSaveChat = async (updatedMessages: Message[]) => {
     if (!user) return;
     try {
+      const messagesToSave: SaveChatHistoryInput['messages'] = updatedMessages.map(m => ({
+          role: m.role,
+          content: m.content
+      }));
+
       await saveChatHistory({
         userId: user.uid,
-        messages: updatedMessages,
+        messages: messagesToSave,
       });
     } catch (error) {
         console.error("Failed to save chat history:", error);
@@ -98,18 +103,12 @@ export function Chat() {
       );
       
       let accumulatedContent = '';
-      const assistantMessage: Message = { role: 'assistant', content: '' };
       
       // Add the empty assistant message to start rendering it
-      let finalMessages: Message[] = [];
-      setMessages(prev => {
-          finalMessages = [...prev, assistantMessage];
-          return finalMessages;
-      });
+      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
       const reader = stream.getReader();
       const decoder = new TextDecoder();
-      let finalContent = '';
 
       while (true) {
           const { value, done } = await reader.read();
@@ -117,17 +116,15 @@ export function Chat() {
               break;
           }
           accumulatedContent += decoder.decode(value, { stream: true });
-          finalContent = accumulatedContent;
           setMessages(prev => {
               const updatedMessages = [...prev];
-              updatedMessages[updatedMessages.length - 1] = { ...assistantMessage, content: accumulatedContent };
-              finalMessages = updatedMessages;
+              updatedMessages[updatedMessages.length - 1] = { role: 'assistant', content: accumulatedContent };
               return updatedMessages;
           });
       }
       
       // Save the complete conversation history
-      const finalAssistantMessage: Message = { role: 'assistant', content: finalContent };
+      const finalAssistantMessage: Message = { role: 'assistant', content: accumulatedContent };
       const conversationToSave = [...newMessages, finalAssistantMessage];
       await handleSaveChat(conversationToSave);
 
