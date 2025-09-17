@@ -1,117 +1,110 @@
+// src/app/(app)/careers/page.tsx
+'use client';
+
+import { useEffect, useState } from 'react';
+import { collection, getDocs, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench } from "lucide-react"
+import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2 } from "lucide-react"
 
-const careerData = {
-  Science: [
-    {
-      degree: "B.Sc. in Computer Science",
-      icon: <PenTool className="h-5 w-5 text-primary" />,
-      paths: ["Software Developer", "Data Analyst", "Cybersecurity Analyst", "AI/ML Engineer"],
-      industries: ["IT & Software", "Finance", "Healthcare", "E-commerce"],
-      further_study: ["M.Sc. Computer Science", "MCA", "MBA in IT"],
-    },
-    {
-      degree: "B.Sc. in Physics",
-      icon: <Microscope className="h-5 w-5 text-primary" />,
-      paths: ["Research Scientist", "Data Scientist", "Lab Technician", "Professor"],
-      industries: ["Research & Development", "Education", "Aerospace", "Energy Sector"],
-      further_study: ["M.Sc. Physics", "Ph.D. in Astrophysics", "B.Ed."],
-    },
-     {
-      degree: "B.Sc. in Biology",
-      icon: <Microscope className="h-5 w-5 text-primary" />,
-      paths: ["Botanist", "Zoologist", "Environmental Consultant", "Pharmacist"],
-      industries: ["Pharmaceuticals", "Agriculture", "Environmental Conservation", "Biotechnology"],
-      further_study: ["M.Sc. Biology/Biotechnology", "MBBS (after qualifying NEET)", "Ph.D."],
-    },
-    {
-      degree: "B.Tech in Mechanical Engineering",
-      icon: <Wrench className="h-5 w-5 text-primary" />,
-      paths: ["Mechanical Engineer", "Robotics Engineer", "Automotive Designer"],
-      industries: ["Automobile", "Aerospace", "Manufacturing", "Robotics"],
-      further_study: ["M.Tech", "MBA", "Ph.D. in Robotics"],
-    },
-  ],
-  Commerce: [
-    {
-      degree: "B.Com. (Bachelor of Commerce)",
-      icon: <BarChart className="h-5 w-5 text-primary" />,
-      paths: ["Accountant", "Financial Analyst", "Tax Consultant", "Bank PO"],
-      industries: ["Banking", "Finance", "Audit & Taxation", "Corporate Sector"],
-      further_study: ["M.Com", "CA (Chartered Accountancy)", "CS (Company Secretary)", "MBA in Finance"],
-    },
-    {
-      degree: "BBA (Bachelor of Business Administration)",
-      icon: <Briefcase className="h-5 w-5 text-primary" />,
-      paths: ["Marketing Manager", "HR Manager", "Operations Manager", "Entrepreneur"],
-      industries: ["Marketing & Sales", "Human Resources", "Management", "Startups"],
-      further_study: ["MBA", "PGDM (Post Graduate Diploma in Management)"],
-    },
-  ],
-  Arts: [
-    {
-      degree: "B.A. in English Literature",
-      icon: <PenTool className="h-5 w-5 text-primary" />,
-      paths: ["Content Writer", "Editor", "Journalist", "Public Relations Officer"],
-      industries: ["Media & Publishing", "Advertising", "Education", "Corporate Communications"],
-      further_study: ["M.A. in English", "Mass Communication", "MBA"],
-    },
-    {
-      degree: "B.A. in History",
-      icon: <Palette className="h-5 w-5 text-primary" />,
-      paths: ["Archaeologist", "Archivist", "Museum Curator", "Civil Services (IAS/IPS)"],
-      industries: ["Government Services", "Museums & Heritage Sites", "Tourism", "Research"],
-      further_study: ["M.A. in History", "Ph.D.", "Diploma in Museology"],
-    },
-    {
-      degree: "Bachelor of Fine Arts (BFA)",
-      icon: <Palette className="h-5 w-5 text-primary" />,
-      paths: ["Graphic Designer", "Animator", "UI/UX Designer", "Art Director"],
-      industries: ["Advertising", "Media", "Gaming", "Web Design"],
-      further_study: ["Master of Fine Arts (MFA)", "Ph.D. in Arts"],
-    },
-  ],
-  Vocational: [
-    {
-        degree: "Diploma in Web Development",
-        icon: <PenTool className="h-5 w-5 text-primary" />,
-        paths: ["Front-end Developer", "Back-end Developer", "Full-stack Developer"],
-        industries: ["IT & Software", "E-commerce", "Startups"],
-        further_study: ["B.Voc in Software Development", "Advanced Certifications"],
-    },
-    {
-        degree: "Diploma in Digital Marketing",
-        icon: <BarChart className="h-5 w-5 text-primary" />,
-        paths: ["SEO Specialist", "Social Media Manager", "Content Marketer"],
-        industries: ["Marketing & Advertising", "E-commerce", "Any business with online presence"],
-        further_study: ["Advanced digital marketing certifications", "BBA in Marketing"],
-    },
-    {
-        degree: "ITI in Electrician Trade",
-        icon: <Wrench className="h-5 w-5 text-primary" />,
-        paths: ["Electrician", "Wireman", "Electronics Technician"],
-        industries: ["Construction", "Manufacturing", "Power Sector", "Railways"],
-        further_study: ["Diploma in Electrical Engineering (Polytechnic)"],
-    },
-  ]
+interface Course {
+  degree: string;
+  iconName: string;
+  paths: string[];
+  industries: string[];
+  further_study: string[];
+  stream: string;
+}
+
+interface CareerData {
+  [key: string]: Course[];
+}
+
+const iconComponents: { [key: string]: React.ElementType } = {
+  PenTool,
+  Microscope,
+  Wrench,
+  BarChart,
+  Briefcase,
+  Palette,
 };
 
 export default function CareersPage() {
+  const [careerData, setCareerData] = useState<CareerData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCareers() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'careers'));
+        const fetchedCareers: Course[] = querySnapshot.docs.map(doc => doc.data() as Course);
+        
+        const groupedData = fetchedCareers.reduce((acc: CareerData, course: Course) => {
+          const { stream } = course;
+          if (!acc[stream]) {
+            acc[stream] = [];
+          }
+          acc[stream].push(course);
+          return acc;
+        }, {});
+
+        setCareerData(groupedData);
+
+      } catch (error) {
+        console.error("Error fetching careers:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCareers();
+  }, []);
+
+  const renderIcon = (iconName: string) => {
+    const Icon = iconComponents[iconName];
+    return Icon ? <Icon className="h-5 w-5 text-primary" /> : <Briefcase className="h-5 w-5 text-primary" />;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!careerData || Object.keys(careerData).length === 0) {
+     return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-headline font-bold">Explore Career Paths</h1>
+          <p className="text-muted-foreground">Discover where different degrees can take you. Click on a course to see the possibilities.</p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>No Career Data Found</CardTitle>
+            <CardDescription>Please add career information to the 'careers' collection in Firestore.</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  const streams = Object.keys(careerData);
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold">Explore Career Paths</h1>
         <p className="text-muted-foreground">Discover where different degrees can take you. Click on a course to see the possibilities.</p>
       </div>
-      <Tabs defaultValue="Science" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="Science">Science</TabsTrigger>
-          <TabsTrigger value="Commerce">Commerce</TabsTrigger>
-          <TabsTrigger value="Arts">Arts</TabsTrigger>
-          <TabsTrigger value="Vocational">Vocational</TabsTrigger>
+      <Tabs defaultValue={streams[0]} className="w-full">
+        <TabsList className={`grid w-full grid-cols-${streams.length}`}>
+          {streams.map(stream => (
+            <TabsTrigger key={stream} value={stream}>{stream}</TabsTrigger>
+          ))}
         </TabsList>
         
         {Object.entries(careerData).map(([stream, courses]) => (
@@ -127,7 +120,7 @@ export default function CareersPage() {
                         <AccordionItem value={`item-${index}`} key={index}>
                             <AccordionTrigger className="font-semibold text-lg hover:no-underline">
                                 <div className="flex items-center gap-3">
-                                    {course.icon}
+                                    {renderIcon(course.iconName)}
                                     {course.degree}
                                 </div>
                             </AccordionTrigger>
