@@ -1,15 +1,18 @@
 // src/app/(app)/colleges/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import { collection, getDocs, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Home, Library, Microscope, Search, Wifi, Loader2 } from 'lucide-react';
+import { Home, Library, Microscope, Search, Wifi, Loader2, Sparkles } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useDebounce } from '@/hooks/use-debounce';
+import { findCollegesFlow, FindCollegesOutput } from '@/ai/flows/find-colleges-flow';
+import { useToast } from '@/hooks/use-toast';
 
 interface College {
   id: string;
@@ -28,27 +31,75 @@ const facilityIcons: { [key: string]: React.ReactElement } = {
 };
 
 export default function CollegesPage() {
-  const [colleges, setColleges] = useState<College[]>([]);
+  const [initialColleges, setInitialColleges] = useState<College[]>([]);
+  const [filteredColleges, setFilteredColleges] = useState<FindCollegesOutput['colleges'] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchSummary, setSearchSummary] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchColleges() {
       try {
         const querySnapshot = await getDocs(collection(db, 'colleges'));
         const fetchedColleges = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as College));
-        setColleges(fetchedColleges);
+        setInitialColleges(fetchedColleges);
       } catch (error) {
         console.error("Error fetching colleges:", error);
+         toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to load initial college list.',
+        });
       } finally {
         setLoading(false);
       }
     }
     fetchColleges();
-  }, []);
+  }, [toast]);
 
-  const getImage = (id: string) => {
-    return PlaceHolderImages.find(img => img.id === id) ?? { imageUrl: '', imageHint: '' };
+  const handleSearch = useCallback(async (query: string) => {
+    if (query.trim().length < 3) {
+      setFilteredColleges(null);
+      setSearchSummary('');
+      return;
+    }
+    setIsSearching(true);
+    setSearchSummary('');
+    try {
+      const result = await findCollegesFlow({ query });
+      setFilteredColleges(result.colleges);
+      setSearchSummary(result.summary);
+    } catch (error) {
+      console.error("Error during AI search:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Search Error',
+        description: 'The AI search failed. Please try a simpler query.',
+      });
+      setFilteredColleges([]); // Show no results on error
+      setSearchSummary('An error occurred during the search.');
+    } finally {
+      setIsSearching(false);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    handleSearch(debouncedSearchQuery);
+  }, [debouncedSearchQuery, handleSearch]);
+
+  const getImage = (name: string) => {
+    // Create a semi-stable mapping from name to an image ID to avoid random images on each search
+    const imageIds = PlaceHolderImages.filter(p => p.id.startsWith('college-')).map(p => p.id);
+    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const imageId = imageIds[hash % imageIds.length] || 'college-1';
+    return PlaceHolderImages.find(img => img.id === imageId) ?? { imageUrl: '', imageHint: '' };
   };
+  
+  const collegesToDisplay = filteredColleges !== null ? filteredColleges : initialColleges.map(c => ({...c}));
+
 
   if (loading) {
     return (
@@ -62,27 +113,48 @@ export default function CollegesPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold">Find Nearby Government Colleges</h1>
-        <p className="text-muted-foreground">Search for colleges and explore their programs, facilities, and more.</p>
+        <p className="text-muted-foreground">Use natural language to search for colleges. Try "colleges in Delhi with B.Sc" or "show me colleges with a hostel".</p>
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input placeholder="Search by college name, city, or course..." className="pl-10" />
+        <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-accent" />
+        <Input 
+          placeholder="Search with AI..." 
+          className="pl-10"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        {isSearching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin" />}
       </div>
+      
+      {searchSummary && (
+         <Card className="bg-accent/10 border-accent/20">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-accent"/> AI Search Results
+            </CardTitle>
+            <CardDescription>{searchSummary}</CardDescription>
+          </CardHeader>
+        </Card>
+      )}
 
-      {colleges.length === 0 ? (
+      {collegesToDisplay.length === 0 && !isSearching ? (
         <Card>
           <CardHeader>
             <CardTitle>No Colleges Found</CardTitle>
-            <CardDescription>Please add college information to the 'colleges' collection in Firestore.</CardDescription>
+            <CardDescription>
+              {filteredColleges !== null 
+                ? "Your search returned no results. Try being more general." 
+                : "Please add college information to the 'colleges' collection in Firestore."}
+            </CardDescription>
           </CardHeader>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {colleges.map((college) => {
-            const { imageUrl, imageHint } = getImage(college.imageUrlId);
+          {collegesToDisplay.map((college) => {
+            const { imageUrl, imageHint } = getImage(college.name);
             return (
-              <Card key={college.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <Card key={college.name} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <div className="relative h-48 w-full">
                   <Image
                     src={imageUrl}
@@ -110,7 +182,7 @@ export default function CollegesPage() {
                     <div className="flex flex-wrap gap-4">
                       {college.facilities.map((facility) => (
                         <div key={facility} className="flex items-center gap-2 text-muted-foreground">
-                          {facilityIcons[facility]}
+                          {facilityIcons[facility] || <div className="h-4 w-4" />}
                           <span className="text-sm">{facility}</span>
                         </div>
                       ))}

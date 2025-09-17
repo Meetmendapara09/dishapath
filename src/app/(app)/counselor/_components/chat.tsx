@@ -20,14 +20,9 @@ type UserProfile = {
 export function Chat() {
   const { user } = useAuth();
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useAIState<any[]>();
-  const {stream, done} = useActions<typeof import('@/ai/flows/career-counselor-chat')>({
-    stream: {
-      careerCounselorChat: async (history, message, userProfile) => {
-        'use server';
-        return await careerCounselorChat(history, message, userProfile);
-      }
-    }
+  const [messages, setMessages] = useAIState<any[]>([]);
+  const {stream, done} = useActions({
+    careerCounselorChat: careerCounselorChat
   });
   const [streaming, setStreaming] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | undefined>();
@@ -130,7 +125,7 @@ export function Chat() {
               content: [{text: m.content}]
             }));
 
-            for await (const delta of stream.careerCounselorChat(
+            for await (const delta of careerCounselorChat(
               historyForAI,
               inputValue,
               userProfile
