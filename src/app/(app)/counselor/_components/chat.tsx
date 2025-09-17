@@ -1,10 +1,9 @@
 'use client';
 
 import {useState, useRef, useEffect} from 'react';
-import {useActions, useUIState, useAIState} from 'ai/rsc';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {Send, User, Bot, Sparkles} from 'lucide-react';
+import {Send, User, Bot, Sparkles, Loader2} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import { careerCounselorChat } from '@/ai/flows/career-counselor-chat';
 import { useAuth } from '@/contexts/auth-context';
@@ -17,13 +16,15 @@ type UserProfile = {
   academicInterests?: string;
 }
 
+interface Message {
+    role: 'user' | 'assistant' | 'tool';
+    content: string;
+}
+
 export function Chat() {
   const { user } = useAuth();
   const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useAIState<any[]>([]);
-  const {stream, done} = useActions({
-    careerCounselorChat: careerCounselorChat
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
   const [streaming, setStreaming] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | undefined>();
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -53,11 +54,60 @@ export function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    if (done && streaming) {
-      setStreaming(false);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+
+    const userMessage: Message = { role: 'user', content: inputValue };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInputValue('');
+    setStreaming(true);
+
+    try {
+      // Map messages to the format expected by the AI flow
+      const historyForAI = messages.map(m => ({
+        role: m.role as 'user' | 'model' | 'tool',
+        content: [{text: m.content}]
+      }));
+
+      const stream = await careerCounselorChat(
+        historyForAI,
+        inputValue,
+        userProfile
+      );
+      
+      let accumulatedContent = '';
+      const assistantMessage: Message = { role: 'assistant', content: '' };
+      setMessages(prev => [...prev, assistantMessage]);
+
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+          const { value, done } = await reader.read();
+          if (done) {
+              break;
+          }
+          accumulatedContent += decoder.decode(value, { stream: true });
+          setMessages(prev => {
+              const updatedMessages = [...prev];
+              updatedMessages[updatedMessages.length - 1] = { ...assistantMessage, content: accumulatedContent };
+              return updatedMessages;
+          });
+      }
+    } catch (error) {
+        console.error("Error streaming chat:", error);
+        const errorMessage: Message = {
+            role: 'assistant',
+            content: "Sorry, I encountered an error. Please try again."
+        };
+        setMessages(prev => [...prev, errorMessage]);
+    } finally {
+        setStreaming(false);
     }
-  }, [done, streaming])
+  }
+
 
   return (
     <div className="flex flex-col h-full bg-card border rounded-lg">
@@ -104,40 +154,21 @@ export function Chat() {
             )}
           </div>
         ))}
+         {streaming && messages[messages.length - 1]?.role !== 'user' && (
+            <div className="flex justify-start">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-primary" />
+                </div>
+                <div className="ml-3 p-3 rounded-lg bg-background flex items-center">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                </div>
+            </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t">
         <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (!inputValue.trim()) return;
-
-            const userMessage = { role: 'user', content: inputValue };
-            setMessages([...messages, userMessage]);
-            setInputValue('');
-
-            let accumulatedContent = '';
-            setStreaming(true);
-            
-            // Map messages to the format expected by the AI flow
-            const historyForAI = messages.map(m => ({
-              role: m.role,
-              content: [{text: m.content}]
-            }));
-
-            for await (const delta of careerCounselorChat(
-              historyForAI,
-              inputValue,
-              userProfile
-            )) {
-              accumulatedContent += delta;
-              setMessages([
-                ...messages,
-                userMessage,
-                { role: 'assistant', content: accumulatedContent },
-              ]);
-            }
-          }}
+          onSubmit={handleSubmit}
         >
           <div className="relative">
             <Input
