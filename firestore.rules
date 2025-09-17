@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Public Collections: Allow anyone to read the documents.
+    match /careers/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /colleges/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /exams/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /scholarships/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+     match /studyMaterials/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // User Data: Secure access to user profiles.
+    match /users/{userId} {
+      // Allow a user to read their own document, and allow admins to read any user document.
+      allow read: if (request.auth != null && request.auth.uid == userId) || 
+                   (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+
+      // Allow a user to create their own document when signing up.
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // Allow a user to update their own document.
+      allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Do not allow users to be deleted from the client.
+      allow delete: if false;
+    }
+  }
+}
