@@ -101,7 +101,7 @@ export default function LandingPage() {
                 Chart Your Course to a Bright Future.
               </h1>
               <p className="max-w-[600px] mx-auto lg:mx-0 text-lg text-foreground/80 md:text-xl">
-                Lakshya360 is your AI-powered copilot for navigating the complex world of Indian education and careers. Discover your perfect path, from 10th grade to your first job.
+                Lakshya360 is an AI-powered guide designed to help every student in India navigate their educational and career journey with confidence. Discover your perfect path, from 10th grade to your first job.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button size="lg" asChild>
@@ -135,10 +135,10 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <div className="space-y-2">
-                <p className="font-semibold text-primary">WHY LAKSHYA360?</p>
-                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">A Smarter Way to Plan Your Career</h2>
+                <p className="font-semibold text-primary">OUR MISSION</p>
+                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">A Smarter Way to Empower Every Student</h2>
                 <p className="max-w-[900px] text-foreground/80 md:text-xl/relaxed">
-                    We focus on what truly matters for Indian students.
+                    We focus on what truly matters: providing accessible, high-quality guidance for all students.
                 </p>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                     <h3 className="text-xl font-headline font-bold">AI-Powered Guidance</h3>
-                    <p className="text-foreground/80 mt-2">Our advanced AI provides personalized recommendations for courses, colleges, and careers based on your unique profile.</p>
+                    <p className="text-foreground/80 mt-2">Our advanced AI provides personalized recommendations for courses, colleges, and careers based on your unique profile and aspirations.</p>
                 </div>
               </div>
                <div className="flex flex-col items-center text-center gap-4">
@@ -158,7 +158,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                     <h3 className="text-xl font-headline font-bold">Focus on Govt. Colleges</h3>
-                    <p className="text-foreground/80 mt-2">We specialize in providing information on government colleges, scholarships, and exams across India.</p>
+                    <p className="text-foreground/80 mt-2">We specialize in providing comprehensive information on government colleges, scholarships, and exams across India to ensure equal opportunity.</p>
                 </div>
               </div>
                <div className="flex flex-col items-center text-center gap-4">
@@ -167,7 +167,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                     <h3 className="text-xl font-headline font-bold">End-to-End Support</h3>
-                    <p className="text-foreground/80 mt-2">From career exploration after 10th grade to finding the right scholarship, we guide you at every step.</p>
+                    <p className="text-foreground/80 mt-2">From career exploration after 10th grade to finding the right scholarship, we guide you at every step of your educational journey.</p>
                 </div>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function LandingPage() {
                  <p className="font-semibold text-primary">FEATURES</p>
                 <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">An Entire Ecosystem for Your Success</h2>
                  <p className="max-w-[900px] text-foreground/80 md:text-xl/relaxed">
-                  Everything you need to make confident decisions about your future, all in one place.
+                  Everything you need to make confident decisions about your future, all in one place, completely free.
                 </p>
               </div>
             </div>
@@ -250,10 +250,10 @@ export default function LandingPage() {
             <div className="bg-gradient-to-r from-primary to-accent/80 rounded-2xl p-12 text-center text-primary-foreground shadow-xl">
               <Sparkles className="h-12 w-12 mx-auto mb-4" />
               <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Ready to Find Your Future?
+                Ready to Build Your Future?
               </h2>
               <p className="mx-auto max-w-[600px] text-primary-foreground/80 md:text-xl mt-4">
-                Take the first step towards a successful career. It's free, easy, and could change your life.
+                Take the first step towards a successful career. It's free, secure, and could change your life.
               </p>
               <Button size="lg" variant="secondary" className="mt-8" asChild>
                 <Link href="/login">

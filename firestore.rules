@@ -2,77 +2,62 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if a user is authenticated
-    function isSignedIn() {
-      return request.auth != null;
-    }
 
-    // Helper function to check if the user is the owner of the document
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    // Helper function to check if the user has an 'admin' role
+    // Helper function to check if the user is an admin
     function isAdmin() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // Public collections that any signed-in user can read
+    // Public collections that any authenticated user can read
     match /careers/{docId} {
-      allow read: if isSignedIn();
-      allow write: if false; // Disallow client-side writes
+      allow read: if request.auth != null;
+      allow write: if false; // Read-only
     }
-
     match /colleges/{docId} {
-      allow read: if isSignedIn();
-      allow write: if false; // Disallow client-side writes
+      allow read: if request.auth != null;
+      allow write: if false; // Read-only
     }
-
-    match /exams/{docId} {
-      allow read: if isSignedIn();
-      allow write: if false; // Disallow client-side writes
+     match /exams/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Read-only
     }
-
-    match /scholarships/{docId} {
-      allow read: if isSignedIn();
-      allow write: if false; // Disallow client-side writes
+     match /scholarships/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Read-only
     }
-
     match /studyMaterials/{docId} {
-      allow read: if isSignedIn();
-      allow write: if false; // Disallow client-side writes
+      allow read: if request.auth != null;
+      allow write: if false; // Read-only
     }
-
 
     // Rules for the 'users' collection
     match /users/{userId} {
-      // Admins can read anyone's profile
-      allow get: if isAdmin();
-      
-      // Users can read and update their own profile.
-      // Anyone can create a user doc (on signup).
-      allow read, update: if isOwner(userId);
-      allow create: if isSignedIn();
-      
-      // Admins can see the list of all users
-      allow list: if isAdmin();
+      // Admins can read any user document
+      allow get: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      // Users can only update their own document
+      allow update: if request.auth != null && request.auth.uid == userId;
+      // Admins can see the list of all users, but individual students cannot
+      allow list: if request.auth != null && isAdmin();
+      // Allow user creation
+      allow create: if request.auth != null;
+    }
 
-      // Rules for user subcollections
-      match /bookmarkedColleges/{bookmarkId} {
-        allow read, write, delete: if isOwner(userId);
-      }
-
-      match /chatSessions/{sessionId} {
-        allow read, write, create: if isOwner(userId);
-      }
-
-      match /recommendations/{recId} {
-        allow read, write, create, delete: if isOwner(userId);
-      }
-      
-      match /quizResults/{quizId} {
-        allow read, write, create: if isOwner(userId);
-      }
+    // Rules for user-specific sub-collections
+    match /users/{userId}/bookmarkedColleges/{docId} {
+      // Users can manage their own bookmarked colleges
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+     match /users/{userId}/chatSessions/{docId} {
+      // Users can manage their own chat sessions
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+     match /users/{userId}/quizResults/{docId} {
+      // Users can manage their own quiz results
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+     match /users/{userId}/recommendations/{docId} {
+      // Users can manage their own recommendations
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
     }
   }
 }

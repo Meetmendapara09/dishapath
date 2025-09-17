@@ -30,7 +30,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Personalized Recommendations</CardTitle>
-              <CardDescription>Fill in your details to get AI-powered course, college, and career suggestions.</CardDescription>
+              <CardDescription>Fill in your details below to get AI-powered course, college, and career suggestions. Your information is kept private and is used solely to provide you with the best recommendations.</CardDescription>
             </CardHeader>
             <CardContent>
               <PersonalizedRecsForm onRecommendationGenerated={handleRecommendationGenerated} />

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -113,7 +114,7 @@ export default function ProfilePage() {
       <Card>
         <CardHeader>
           <CardTitle>Your Details</CardTitle>
-          <CardDescription>This information helps us personalize your experience.</CardDescription>
+          <CardDescription>This information helps us personalize your experience. It is kept private and secure.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

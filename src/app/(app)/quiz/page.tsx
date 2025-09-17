@@ -1,3 +1,4 @@
+
 import { QuizClient } from "./_components/quiz-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -11,7 +12,7 @@ export default function QuizPage() {
       <Card>
         <CardHeader>
           <CardTitle>Let's get started!</CardTitle>
-          <CardDescription>This will only take a couple of minutes.</CardDescription>
+          <CardDescription>Your answers help our AI provide personalized suggestions. Your results are private and saved to your profile.</CardDescription>
         </CardHeader>
         <CardContent>
           <QuizClient />
