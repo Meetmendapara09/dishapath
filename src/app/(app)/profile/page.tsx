@@ -48,10 +48,16 @@ export default function ProfilePage() {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           form.reset({
-            displayName: userData.displayName || '',
-            email: userData.email || '',
+            displayName: userData.displayName || user.displayName || '',
+            email: userData.email || user.email || '',
             class: userData.class || '',
             academicInterests: userData.academicInterests || '',
+          });
+        } else {
+          // Pre-fill with auth data if no firestore doc exists
+           form.reset({
+            displayName: user.displayName || '',
+            email: user.email || '',
           });
         }
         setLoading(false);
@@ -64,7 +70,11 @@ export default function ProfilePage() {
     if (!user) return;
     setSaving(true);
     try {
-      await setDoc(doc(db, 'users', user.uid), values, { merge: true });
+      // We use setDoc with merge:true to create or update the document
+      await setDoc(doc(db, 'users', user.uid), {
+        ...values,
+        uid: user.uid, // ensure uid is saved
+      }, { merge: true });
       toast({
         title: 'Success!',
         description: 'Your profile has been updated.',

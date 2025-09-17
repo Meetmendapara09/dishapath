@@ -1,15 +1,15 @@
-import { CalendarDays, Megaphone, School, User } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { PersonalizedRecsForm } from './_components/personalized-recs-form';
 import { useAuth } from '@/contexts/auth-context';
 import { Timeline } from './_components/timeline';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-headline font-bold">Welcome, Student!</h1>
+        <h1 className="text-3xl font-headline font-bold">Welcome, {user?.displayName || 'Student'}!</h1>
         <p className="text-muted-foreground">Your personalized guide to a bright future starts here.</p>
       </div>
 
