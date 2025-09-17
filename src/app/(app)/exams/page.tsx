@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Book, Calendar, Target, Loader2 } from "lucide-react";
+import { ArrowRight, Book, Calendar, Target, Loader2, PenSquare, Scale, Palette, Utensils, Tv } from "lucide-react";
 import Link from "next/link";
 
 interface Exam {
@@ -25,7 +25,7 @@ const sampleExams: Exam[] = [
     {
         id: 'jee-main',
         name: 'JEE Main',
-        purpose: 'Engineering Entrance (NITs, IIITs)',
+        purpose: 'Engineering Entrance (NITs, IIITs, GFTIs)',
         subjects: ['Physics', 'Chemistry', 'Mathematics'],
         website: 'https://jeemain.nta.nic.in/',
         tentativeDate: 'January & April',
@@ -43,7 +43,7 @@ const sampleExams: Exam[] = [
     {
         id: 'neet',
         name: 'NEET (UG)',
-        purpose: 'Medical Entrance (MBBS, BDS)',
+        purpose: 'Medical & Dental Entrance (MBBS, BDS, AYUSH)',
         subjects: ['Physics', 'Chemistry', 'Biology'],
         website: 'https://neet.nta.nic.in/',
         tentativeDate: 'May',
@@ -51,85 +51,121 @@ const sampleExams: Exam[] = [
     },
     {
         id: 'cuet',
-        name: 'CUET',
-        purpose: 'Central University Entrance',
-        subjects: ['Varies by Course'],
+        name: 'CUET (UG)',
+        purpose: 'Central, State, & Private University Entrance',
+        subjects: ['Varies by Course & University'],
         website: 'https://cuet.samarth.ac.in/',
         tentativeDate: 'May - June',
-        level: 'After 12th'
-    },
-     {
-        id: 'bitsat',
-        name: 'BITSAT',
-        purpose: 'Engineering Entrance (BITS Pilani)',
-        subjects: ['Physics', 'Chemistry', 'Maths', 'English', 'Logical Reasoning'],
-        website: 'https://www.bitsadmission.com/',
-        tentativeDate: 'May & June',
         level: 'After 12th'
     },
     {
         id: 'clat',
         name: 'CLAT',
-        purpose: 'Law Entrance (NLUs)',
+        purpose: 'Law Entrance (22 National Law Universities)',
         subjects: ['English', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques', 'Current Affairs'],
         website: 'https://consortiumofnlus.ac.in/',
         tentativeDate: 'December',
         level: 'After 12th'
     },
     {
+        id: 'nchmct-jee',
+        name: 'NCHMCT JEE',
+        purpose: 'Hotel Management & Catering Technology',
+        subjects: ['Numerical Ability', 'Aptitude', 'Reasoning', 'English', 'General Knowledge'],
+        website: 'https://nchmjee.nta.nic.in/',
+        tentativeDate: 'May',
+        level: 'After 12th'
+    },
+    {
+        id: 'nid-dat',
+        name: 'NID DAT',
+        purpose: 'Design Entrance (National Institute of Design)',
+        subjects: ['Creative Ability Test', 'Studio Test'],
+        website: 'https://admissions.nid.edu/',
+        tentativeDate: 'December - January',
+        level: 'After 12th'
+    },
+    {
+        id: 'nift',
+        name: 'NIFT Entrance Exam',
+        purpose: 'Fashion Technology & Design (NIFT)',
+        subjects: ['Creative Ability', 'General Ability', 'Situation Test'],
+        website: 'https://www.nift.ac.in/admission',
+        tentativeDate: 'February',
+        level: 'After 12th'
+    },
+    {
+        id: 'uceed',
+        name: 'UCEED',
+        purpose: 'Undergraduate Design Entrance (IITs, IIITDM)',
+        subjects: ['Visualization', 'Observation', 'Design thinking', 'Logical Reasoning'],
+        website: 'https://www.uceed.iitb.ac.in/',
+        tentativeDate: 'January',
+        level: 'After 12th'
+    },
+    {
+        id: 'ca-foundation',
+        name: 'CA Foundation',
+        purpose: 'Chartered Accountancy First Level',
+        subjects: ['Accounting', 'Business Laws', 'Mathematics & Statistics', 'Business Economics'],
+        website: 'https://www.icai.org/',
+        tentativeDate: 'May & November',
+        level: 'After 12th'
+    },
+    {
+        id: 'iiser-iat',
+        name: 'IISER Aptitude Test (IAT)',
+        purpose: 'Science UG Admissions (IISERs)',
+        subjects: ['Physics', 'Chemistry', 'Maths', 'Biology'],
+        website: 'https://www.iiseradmission.in/',
+        tentativeDate: 'June',
+        level: 'After 12th'
+    },
+    {
         id: 'nest',
         name: 'NEST',
-        purpose: 'Science Entrance (NISER, CEBS)',
+        purpose: 'Integrated M.Sc in Science (NISER, CEBS)',
         subjects: ['Biology', 'Chemistry', 'Mathematics', 'Physics'],
         website: 'https://www.nestexam.in/',
         tentativeDate: 'June',
         level: 'After 12th'
     },
     {
-        id: 'iiser-iat',
-        name: 'IISER Aptitude Test (IAT)',
-        purpose: 'Science Entrance (IISERs)',
-        subjects: ['Physics', 'Chemistry', 'Maths', 'Biology'],
-        website: 'https://www.iiseradmission.in/',
-        tentativeDate: 'June',
+        id: 'bitsat',
+        name: 'BITSAT',
+        purpose: 'Engineering & Pharmacy (BITS Pilani Campuses)',
+        subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Logical Reasoning'],
+        website: 'https://www.bitsadmission.com/',
+        tentativeDate: 'May & June',
         level: 'After 12th'
     },
-     {
-        id: 'isi',
-        name: 'ISI Admission Test',
-        purpose: 'Statistics & Mathematics (ISI)',
-        subjects: ['Mathematics', 'Statistics'],
-        website: 'https://www.isical.ac.in/~admission/',
-        tentativeDate: 'May',
-        level: 'After 12th'
-    },
-     {
+    {
         id: 'viteee',
         name: 'VITEEE',
-        purpose: 'Engineering Entrance (VIT)',
+        purpose: 'Engineering Entrance (VIT Campuses)',
         subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Aptitude'],
         website: 'https://viteee.vit.ac.in/',
         tentativeDate: 'April',
         level: 'After 12th'
     },
     {
+        id: 'srmjee',
+        name: 'SRMJEEE',
+        purpose: 'Engineering Entrance (SRM Campuses)',
+        subjects: ['Physics', 'Chemistry', 'Maths/Biology', 'English', 'Aptitude'],
+        website: 'https://www.srmist.edu.in/admission-india/',
+        tentativeDate: 'April, June, July',
+        level: 'After 12th'
+    },
+    {
         id: 'ntse',
         name: 'NTSE',
-        purpose: 'Scholarship Exam for Science Talent',
+        purpose: 'Scholarship Exam for High-Achieving Students',
         subjects: ['Mental Ability', 'Scholastic Aptitude (Maths, Science, Social Science)'],
         website: 'https://ncert.nic.in/ntse.php',
         tentativeDate: 'On Hold',
         level: 'After 10th'
     },
-    {
-        id: 'kvy',
-        name: 'KVPY (Discontinued, Merged with INSPIRE)',
-        purpose: 'Fellowship in Basic Sciences',
-        subjects: ['Physics', 'Chemistry', 'Maths', 'Biology'],
-        website: 'http://www.kvpy.iisc.ernet.in/',
-        tentativeDate: 'Discontinued',
-        level: 'After 12th'
-    }
 ];
 
 
