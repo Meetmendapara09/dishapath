@@ -193,35 +193,43 @@ export function PersonalizedRecsForm() {
         </form>
       </Form>
 
+      {loading && (
+         <div className="flex flex-col items-center justify-center text-center p-8 space-y-4 mt-8 bg-card rounded-lg border">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="text-lg font-semibold">Generating your personalized path...</p>
+            <p className="text-muted-foreground">Our AI is analyzing your profile to craft the best recommendations for you.</p>
+        </div>
+      )}
+
       {recommendations && (
-        <Card className="mt-8 bg-primary/5">
+        <Card className="mt-8 bg-primary/5 border-primary/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline">
+            <CardTitle className="flex items-center gap-3 font-headline text-xl">
               <Sparkles className="text-accent" /> Here are your personalized recommendations!
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <h3 className="font-semibold flex items-center gap-2 mb-2"><GraduationCap className="h-5 w-5 text-primary" />Recommended Courses</h3>
+              <h3 className="font-semibold flex items-center gap-2 mb-3"><GraduationCap className="h-5 w-5 text-primary" />Recommended Courses</h3>
               <div className="flex flex-wrap gap-2">
                 {recommendations.recommendedCourses.map((course) => (
-                  <div key={course} className="bg-primary/10 text-primary font-medium px-3 py-1 rounded-full text-sm">{course}</div>
+                  <div key={course} className="bg-primary/10 text-primary-foreground font-medium px-3 py-1 rounded-full text-sm bg-primary">{course}</div>
                 ))}
               </div>
             </div>
              <div>
-              <h3 className="font-semibold flex items-center gap-2 mb-2"><School className="h-5 w-5 text-primary" />Nearby Colleges</h3>
+              <h3 className="font-semibold flex items-center gap-2 mb-3"><School className="h-5 w-5 text-primary" />Nearby Colleges</h3>
               <div className="flex flex-wrap gap-2">
                 {recommendations.nearbyColleges.map((college) => (
-                  <div key={college} className="bg-primary/10 text-primary font-medium px-3 py-1 rounded-full text-sm">{college}</div>
+                  <div key={college} className="bg-secondary text-secondary-foreground font-medium px-3 py-1 rounded-full text-sm">{college}</div>
                 ))}
               </div>
             </div>
              <div>
-              <h3 className="font-semibold flex items-center gap-2 mb-2"><Briefcase className="h-5 w-5 text-primary" />Potential Career Paths</h3>
+              <h3 className="font-semibold flex items-center gap-2 mb-3"><Briefcase className="h-5 w-5 text-primary" />Potential Career Paths</h3>
               <div className="flex flex-wrap gap-2">
                 {recommendations.careerPaths.map((path) => (
-                  <div key={path} className="bg-primary/10 text-primary font-medium px-3 py-1 rounded-full text-sm">{path}</div>
+                  <div key={path} className="bg-secondary text-secondary-foreground font-medium px-3 py-1 rounded-full text-sm">{path}</div>
                 ))}
               </div>
             </div>

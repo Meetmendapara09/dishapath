@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '@/components/logo';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const keyFeatures = [
   {
@@ -52,6 +53,9 @@ const keyFeatures = [
 
 
 export default function LandingPage() {
+  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-students');
+  const testimonialAvatar = PlaceHolderImages.find(p => p.id === 'testimonial-avatar-1');
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="container mx-auto h-20 flex items-center justify-between px-4 md:px-6 sticky top-0 z-50 bg-background/80 backdrop-blur-sm">
@@ -89,13 +93,13 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 hover:scale-105 transition-transform duration-500">
-               <Image
-                src="https://picsum.photos/seed/101/800/600"
+               {heroImage && <Image
+                src={heroImage.imageUrl}
                 alt="Happy students looking towards the future"
                 fill
                 className="object-cover"
-                data-ai-hint="happy students future"
-              />
+                data-ai-hint={heroImage.imageHint}
+              />}
                <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
             </div>
           </div>
@@ -168,10 +172,10 @@ export default function LandingPage() {
                         "Disha Path cleared all my confusion after 12th grade. I finally understood which course was right for me and found a great government college nearby. It's a game-changer!"
                     </blockquote>
                     <div className="mt-8 flex items-center justify-center gap-4">
-                        <Avatar className="h-12 w-12">
-                        <AvatarImage src="https://picsum.photos/seed/102/60/60" alt="Priya S." data-ai-hint="indian student" />
-                        <AvatarFallback>PS</AvatarFallback>
-                        </Avatar>
+                        {testimonialAvatar && <Avatar className="h-12 w-12">
+                          <AvatarImage src={testimonialAvatar.imageUrl} alt="Priya S." data-ai-hint={testimonialAvatar.imageHint} />
+                          <AvatarFallback>PS</AvatarFallback>
+                        </Avatar>}
                         <div>
                         <p className="font-semibold text-lg">Priya S.</p>
                         <p className="text-sm text-foreground/80">Class 12 Student, Jaipur</p>

@@ -5,13 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Trophy, School, IndianRupee, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const scholarships = [
   {
     name: 'National Merit Scholarship',
     provider: 'Government of India',
-    imageUrl: 'https://picsum.photos/seed/301/600/400',
-    imageHint: 'government building',
+    imageUrlId: 'scholarship-1',
     eligibility: ['Passed Class 12', 'Top 20 percentile'],
     amount: '₹10,000 - ₹20,000 per year',
     deadline: 'October 31, 2024',
@@ -20,8 +20,7 @@ const scholarships = [
   {
     name: 'State Science Talent Search',
     provider: 'State Education Board',
-    imageUrl: 'https://picsum.photos/seed/302/600/400',
-    imageHint: 'university library',
+    imageUrlId: 'scholarship-2',
     eligibility: ['Studying in Class 11/12 (Science)', 'Domicile of State'],
     amount: '₹5,000 one-time',
     deadline: 'September 15, 2024',
@@ -30,8 +29,7 @@ const scholarships = [
   {
     name: 'Sarojini Excellence Scholarship for Girls',
     provider: 'Future India Foundation',
-    imageUrl: 'https://picsum.photos/seed/303/600/400',
-    imageHint: 'female student',
+    imageUrlId: 'scholarship-3',
     eligibility: ['Female students', 'Family income < ₹6 LPA'],
     amount: 'Full tuition fee waiver',
     deadline: 'November 30, 2024',
@@ -40,8 +38,7 @@ const scholarships = [
   {
     name: 'Digital India Scholarship',
     provider: 'Ministry of IT',
-    imageUrl: 'https://picsum.photos/seed/304/600/400',
-    imageHint: 'modern technology',
+    imageUrlId: 'scholarship-4',
     eligibility: ['Pursuing IT/Computer Science', '60% in Class 12'],
     amount: '₹30,000 per year',
     deadline: 'December 25, 2024',
@@ -50,6 +47,10 @@ const scholarships = [
 ];
 
 export default function ScholarshipsPage() {
+   const getImage = (id: string) => {
+    return PlaceHolderImages.find(img => img.id === id) ?? { imageUrl: '', imageHint: '' };
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -63,15 +64,17 @@ export default function ScholarshipsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {scholarships.map((scholarship, index) => (
+        {scholarships.map((scholarship, index) => {
+          const { imageUrl, imageHint } = getImage(scholarship.imageUrlId);
+          return (
           <Card key={index} className="flex flex-col">
             <div className="relative h-48 w-full">
               <Image
-                src={scholarship.imageUrl}
+                src={imageUrl}
                 alt={`Image for ${scholarship.name}`}
                 fill
                 className="object-cover rounded-t-lg"
-                data-ai-hint={scholarship.imageHint}
+                data-ai-hint={imageHint}
               />
             </div>
             <CardHeader>
@@ -106,7 +109,8 @@ export default function ScholarshipsPage() {
                 </Button>
             </div>
           </Card>
-        ))}
+        );
+        })}
       </div>
     </div>
   );
