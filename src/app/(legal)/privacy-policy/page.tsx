@@ -2,10 +2,10 @@
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <h1>Privacy Policy for Disha Path</h1>
+      <h1>Privacy Policy for Lakshya360</h1>
       <p>Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
       
-      <p>Welcome to Disha Path! Your privacy is important to us. This policy explains what information we collect, how we use it, and your choices regarding your data. We've tried to make it as clear and simple as possible.</p>
+      <p>Welcome to Lakshya360! Your privacy is important to us. This policy explains what information we collect, how we use it, and your choices regarding your data. We've tried to make it as clear and simple as possible.</p>
       
       <h2>1. What Information We Collect</h2>
       <p>To provide and improve our services, we collect a few types of information.</p>

@@ -55,7 +55,7 @@ const keyFeatures = [
 
 const testimonials = [
   {
-    quote: "Disha Path cleared all my confusion after 12th grade. I finally understood which course was right for me and found a great government college nearby. It's a game-changer!",
+    quote: "Lakshya360 cleared all my confusion after 12th grade. I finally understood which course was right for me and found a great government college nearby. It's a game-changer!",
     name: "Priya S.",
     role: "Class 12 Student, Jaipur",
     avatarId: "testimonial-avatar-1"
@@ -67,7 +67,7 @@ const testimonials = [
     avatarId: "testimonial-avatar-2"
   },
   {
-    quote: "As a parent, I was worried about my daughter's career choices. Disha Path gave us a clear roadmap and helped us explore options we hadn't even considered. Highly recommended!",
+    quote: "As a parent, I was worried about my daughter's career choices. Lakshya360 gave us a clear roadmap and helped us explore options we hadn't even considered. Highly recommended!",
     name: "Anjali D.",
     role: "Parent, Mumbai",
     avatarId: "testimonial-avatar-3"
@@ -98,7 +98,7 @@ export default function LandingPage() {
                 Your Future, Illuminated.
               </h1>
               <p className="max-w-[600px] mx-auto lg:mx-0 text-lg text-foreground/80 md:text-xl">
-                Disha Path is your AI-powered copilot for navigating the complex world of education and careers in India. Discover your perfect path, today.
+                Lakshya360 is your AI-powered copilot for navigating the complex world of education and careers in India. Discover your perfect path, today.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button size="lg" asChild>
@@ -249,7 +249,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <Logo />
-              <p className="text-sm text-foreground/60">&copy; {new Date().getFullYear()} Disha Path. All rights reserved.</p>
+              <p className="text-sm text-foreground/60">&copy; {new Date().getFullYear()} Lakshya360. All rights reserved.</p>
             </div>
             <div className="space-y-2">
               <h4 className="font-semibold text-foreground">Navigate</h4>

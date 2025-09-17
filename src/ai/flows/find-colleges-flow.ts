@@ -99,7 +99,7 @@ const prompt = ai.definePrompt({
   input: {schema: FindCollegesInputSchema},
   output: {schema: FindCollegesOutputSchema},
   tools: [findCollegesTool],
-  prompt: `You are an AI assistant for the Disha Path platform. Your task is to help students find government colleges in India.
+  prompt: `You are an AI assistant for the Lakshya360 platform. Your task is to help students find government colleges in India.
 
   1.  Analyze the user's query: {{{query}}}
   2.  Identify key criteria like course names, city, facilities, or specific college names.

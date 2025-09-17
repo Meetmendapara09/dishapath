@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/contexts/auth-context';
 
 export const metadata: Metadata = {
-  title: 'Disha Path',
+  title: 'Lakshya360',
   description: 'A personalized career and education advisor for students.',
   manifest: '/manifest.json',
 };
