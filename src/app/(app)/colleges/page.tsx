@@ -3,16 +3,18 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { collection, getDocs, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Home, Library, Microscope, Search, Wifi, Loader2, Sparkles } from 'lucide-react';
+import { Home, Library, Microscope, Search, Wifi, Loader2, Sparkles, Bookmark } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useDebounce } from '@/hooks/use-debounce';
 import { findCollegesFlow, FindCollegesOutput } from '@/ai/flows/find-colleges-flow';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/auth-context';
+import { Button } from '@/components/ui/button';
 
 interface College {
   id: string;
@@ -31,12 +33,14 @@ const facilityIcons: { [key: string]: React.ReactElement } = {
 };
 
 export default function CollegesPage() {
+  const { user } = useAuth();
   const [initialColleges, setInitialColleges] = useState<College[]>([]);
   const [filteredColleges, setFilteredColleges] = useState<FindCollegesOutput['colleges'] | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchSummary, setSearchSummary] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [bookmarkedColleges, setBookmarkedColleges] = useState<string[]>([]);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const { toast } = useToast();
 
@@ -59,6 +63,15 @@ export default function CollegesPage() {
     }
     fetchColleges();
   }, [toast]);
+  
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = onSnapshot(collection(db, 'users', user.uid, 'bookmarkedColleges'), (snapshot) => {
+        const bookmarks = snapshot.docs.map(doc => doc.id);
+        setBookmarkedColleges(bookmarks);
+    });
+    return () => unsubscribe();
+  }, [user]);
 
   const handleSearch = useCallback(async (query: string) => {
     if (query.trim().length < 3) {
@@ -89,6 +102,28 @@ export default function CollegesPage() {
   useEffect(() => {
     handleSearch(debouncedSearchQuery);
   }, [debouncedSearchQuery, handleSearch]);
+  
+  const toggleBookmark = async (collegeId: string, collegeData: any) => {
+    if (!user) {
+      toast({ variant: 'destructive', title: 'Not logged in', description: 'You must be logged in to bookmark colleges.' });
+      return;
+    }
+    const isBookmarked = bookmarkedColleges.includes(collegeId);
+    const bookmarkRef = doc(db, 'users', user.uid, 'bookmarkedColleges', collegeId);
+    
+    try {
+        if (isBookmarked) {
+            await deleteDoc(bookmarkRef);
+            toast({ title: 'Bookmark Removed', description: `${collegeData.name} has been removed from your bookmarks.` });
+        } else {
+            await setDoc(bookmarkRef, { ...collegeData, bookmarkedAt: new Date() });
+            toast({ title: 'Bookmarked!', description: `${collegeData.name} has been added to your bookmarks.` });
+        }
+    } catch (error) {
+        console.error("Error toggling bookmark:", error);
+        toast({ variant: 'destructive', title: 'Error', description: 'Could not update your bookmarks. Please try again.' });
+    }
+  };
 
   const getImage = (name: string) => {
     // Create a semi-stable mapping from name to an image ID to avoid random images on each search
@@ -98,7 +133,7 @@ export default function CollegesPage() {
     return PlaceHolderImages.find(img => img.id === imageId) ?? { imageUrl: '', imageHint: '' };
   };
   
-  const collegesToDisplay = filteredColleges !== null ? filteredColleges : initialColleges.map(c => ({...c}));
+  const collegesToDisplay = filteredColleges !== null ? filteredColleges : initialColleges.map(c => ({...c, id: c.id}));
 
 
   if (loading) {
@@ -153,8 +188,11 @@ export default function CollegesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {collegesToDisplay.map((college) => {
             const { imageUrl, imageHint } = getImage(college.name);
+            const collegeId = (college as any).id || college.name; // Handle both initial and AI search results
+            const isBookmarked = bookmarkedColleges.includes(collegeId);
+            
             return (
-              <Card key={college.name} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <Card key={collegeId} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
                 <div className="relative h-48 w-full">
                   <Image
                     src={imageUrl}
@@ -164,12 +202,18 @@ export default function CollegesPage() {
                     data-ai-hint={imageHint}
                   />
                 </div>
-                <CardHeader>
-                  <CardTitle>{college.name}</CardTitle>
-                  <CardDescription>Medium: {college.medium}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                <CardHeader className="flex-row justify-between items-start">
                   <div>
+                    <CardTitle>{college.name}</CardTitle>
+                    <CardDescription>Medium: {college.medium}</CardDescription>
+                  </div>
+                  <Button variant="ghost" size="icon" onClick={() => toggleBookmark(collegeId, college)}>
+                    <Bookmark className={cn("h-5 w-5 text-muted-foreground", isBookmarked && "fill-accent text-accent")} />
+                    <span className="sr-only">Bookmark College</span>
+                  </Button>
+                </CardHeader>
+                <CardContent className="space-y-4 flex-grow flex flex-col">
+                  <div className="flex-grow">
                     <h4 className="font-semibold mb-2 text-sm">Courses Offered</h4>
                     <div className="flex flex-wrap gap-2">
                       {college.courses.map((course) => (
@@ -178,7 +222,7 @@ export default function CollegesPage() {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2 text-sm">Facilities</h4>
+                    <h4 className="font-semibold mb-2 text-sm mt-4">Facilities</h4>
                     <div className="flex flex-wrap gap-4">
                       {college.facilities.map((facility) => (
                         <div key={facility} className="flex items-center gap-2 text-muted-foreground">

@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { Timeline } from './_components/timeline';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SavedRecommendations } from './_components/saved-recs';
+import { BookmarkedColleges } from './_components/bookmarked-colleges';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -42,6 +43,7 @@ export default function DashboardPage() {
         
         <div className="space-y-6">
            <Timeline />
+           <BookmarkedColleges />
         </div>
       </div>
     </div>
