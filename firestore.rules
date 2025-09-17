@@ -1,63 +1,42 @@
 
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper function to check if the user is an admin
+    // Helper function to check if a user is logged in
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if the user is the owner of the document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Helper function to check if the user has an 'admin' role
     function isAdmin() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      // Check for the existence of the user document and the role field before accessing it.
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // Public collections that any authenticated user can read
-    match /careers/{docId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Read-only
-    }
-    match /colleges/{docId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Read-only
-    }
-     match /exams/{docId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Read-only
-    }
-     match /scholarships/{docId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Read-only
-    }
-    match /studyMaterials/{docId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Read-only
+    // Publicly readable collections
+    match /{publicCollection}/{docId} where publicCollection in ['careers', 'colleges', 'exams', 'scholarships', 'studyMaterials'] {
+      allow read: if true;
+      allow write: if false; // Read-only for clients
     }
 
-    // Rules for the 'users' collection
+    // Admins can list all users. This is needed for the admin dashboard.
     match /users/{userId} {
-      // Admins can read any user document
-      allow get: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      // Users can only update their own document
-      allow update: if request.auth != null && request.auth.uid == userId;
-      // Admins can see the list of all users, but individual students cannot
-      allow list: if request.auth != null && isAdmin();
-      // Allow user creation
-      allow create: if request.auth != null;
+       allow list: if isSignedIn() && isAdmin();
+       allow read, update, create: if isSignedIn() && isOwner(userId);
+       allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
     }
 
-    // Rules for user-specific sub-collections
-    match /users/{userId}/bookmarkedColleges/{docId} {
-      // Users can manage their own bookmarked colleges
-      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
-    }
-     match /users/{userId}/chatSessions/{docId} {
-      // Users can manage their own chat sessions
-      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
-    }
-     match /users/{userId}/quizResults/{docId} {
-      // Users can manage their own quiz results
-      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
-    }
-     match /users/{userId}/recommendations/{docId} {
-      // Users can manage their own recommendations
-      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    // Users can manage their own subcollections
+    match /users/{userId}/{subcollection}/{docId} where subcollection in ['bookmarkedColleges', 'chatSessions', 'recommendations', 'quizResults'] {
+      allow read, write, delete, create: if isSignedIn() && isOwner(userId);
     }
   }
 }
