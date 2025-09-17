@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2, Sparkles, Wand2 } from "lucide-react"
+import { BarChart, Briefcase, Building, GraduationCap, Microscope, Palette, PenTool, Wrench, Loader2, Sparkles, Wand2, Code } from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { generateDayInLifeStory, DayInLifeStoryOutput } from '@/ai/flows/day-in-a-life-story-generator';
@@ -28,6 +28,85 @@ interface CareerData {
   [key: string]: Course[];
 }
 
+const sampleCareers: Course[] = [
+  // Science Stream
+  {
+    stream: "Science",
+    degree: "B.Tech in Computer Science",
+    iconName: "Code",
+    paths: ["Software Engineer", "Data Scientist", "Cybersecurity Analyst", "AI/ML Engineer"],
+    industries: ["IT Services", "Finance", "Healthcare", "E-commerce"],
+    further_study: ["M.Tech", "MBA", "PhD"]
+  },
+  {
+    stream: "Science",
+    degree: "B.Tech in Mechanical Engineering",
+    iconName: "Wrench",
+    paths: ["Mechanical Engineer", "Automotive Designer", "Aerospace Engineer", "Robotics Engineer"],
+    industries: ["Manufacturing", "Automobile", "Aerospace", "Energy"],
+    further_study: ["M.Tech", "MS in Robotics", "MBA"]
+  },
+  {
+    stream: "Science",
+    degree: "MBBS (Bachelor of Medicine, Bachelor of Surgery)",
+    iconName: "Microscope",
+    paths: ["Doctor (General Physician)", "Surgeon", "Specialist (e.g., Cardiologist)", "Medical Researcher"],
+    industries: ["Hospitals", "Private Practice", "Research Institutes", "Public Health"],
+    further_study: ["MD (Doctor of Medicine)", "MS (Master of Surgery)"]
+  },
+  {
+    stream: "Science",
+    degree: "B.Sc in Physics",
+    iconName: "Microscope",
+    paths: ["Research Scientist", "Data Analyst", "Lab Technician", "Science Journalist"],
+    industries: ["Research (ISRO, DRDO)", "Education", "IT", "Media"],
+    further_study: ["M.Sc in Physics", "PhD", "B.Ed"]
+  },
+  // Commerce Stream
+  {
+    stream: "Commerce",
+    degree: "Bachelor of Commerce (B.Com)",
+    iconName: "BarChart",
+    paths: ["Accountant", "Financial Analyst", "Tax Consultant", "Auditor"],
+    industries: ["Banking", "Finance", "Consulting", "FMCG"],
+    further_study: ["CA (Chartered Accountancy)", "MBA in Finance", "M.Com"]
+  },
+  {
+    stream: "Commerce",
+    degree: "Bachelor of Business Administration (BBA)",
+    iconName: "Briefcase",
+    paths: ["Marketing Manager", "HR Manager", "Operations Head", "Entrepreneur"],
+    industries: ["Retail", "Marketing & Advertising", "IT", "Startups"],
+    further_study: ["MBA", "PGDM", "Master's in Management"]
+  },
+  // Arts Stream
+  {
+    stream: "Arts",
+    degree: "B.A. in English Literature",
+    iconName: "PenTool",
+    paths: ["Content Writer", "Editor", "Journalist", "Public Relations Officer"],
+    industries: ["Media & Publishing", "Advertising", "Corporate Communications", "Education"],
+    further_study: ["M.A. in English", "Mass Communication", "PhD"]
+  },
+  {
+    stream: "Arts",
+    degree: "Bachelor of Fine Arts (BFA)",
+    iconName: "Palette",
+    paths: ["Graphic Designer", "Illustrator", "Animator", "Art Director"],
+    industries: ["Advertising", "Media & Entertainment", "Gaming", "Fashion"],
+    further_study: ["Master of Fine Arts (MFA)", "PG Diploma in Design"]
+  },
+   {
+    stream: "Arts",
+    degree: "B.A. in Political Science",
+    iconName: "PenTool",
+    paths: ["Policy Analyst", "Civil Servant (IAS, IPS)", "Legislative Assistant", "Political Consultant"],
+    industries: ["Government", "NGOs", "Think Tanks", "Media"],
+    further_study: ["M.A. in Political Science", "Master's in Public Policy", "LLB"]
+  }
+];
+
+
 const iconComponents: { [key: string]: React.ElementType } = {
   PenTool,
   Microscope,
@@ -35,6 +114,7 @@ const iconComponents: { [key: string]: React.ElementType } = {
   BarChart,
   Briefcase,
   Palette,
+  Code
 };
 
 export default function CareersPage() {
@@ -49,8 +129,9 @@ export default function CareersPage() {
   useEffect(() => {
     async function fetchCareers() {
       try {
-        const querySnapshot = await getDocs(collection(db, 'careers'));
-        const fetchedCareers: Course[] = querySnapshot.docs.map(doc => doc.data() as Course);
+        // const querySnapshot = await getDocs(collection(db, 'careers'));
+        // const fetchedCareers: Course[] = querySnapshot.docs.map(doc => doc.data() as Course);
+        const fetchedCareers = sampleCareers;
         
         const groupedData = fetchedCareers.reduce((acc: CareerData, course: Course) => {
           const { stream } = course;
@@ -117,7 +198,7 @@ export default function CareersPage() {
         <Card>
           <CardHeader>
             <CardTitle>No Career Data Found</CardTitle>
-            <CardDescription>Please add career information to the 'careers' collection in Firestore.</CardDescription>
+            <CardDescription>Please add career information to the 'careers' collection in Firestore or add sample data to the page.</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -133,7 +214,7 @@ export default function CareersPage() {
         <p className="text-muted-foreground">Discover where different degrees can take you. Click on a course to see the possibilities.</p>
       </div>
       <Tabs defaultValue={streams[0]} className="w-full">
-        <TabsList className={`grid w-full grid-cols-${streams.length}`}>
+        <TabsList className={`grid w-full grid-cols-${streams.length > 0 ? streams.length : 1}`}>
           {streams.map(stream => (
             <TabsTrigger key={stream} value={stream}>{stream}</TabsTrigger>
           ))}
