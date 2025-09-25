@@ -67,7 +67,29 @@ const suggestCoursesFromQuizFlow = ai.defineFlow(
     outputSchema: SuggestCoursesFromQuizOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    // Retry logic for rate limits
+    let attempts = 0;
+    const maxAttempts = 3;
+    const baseDelay = 2000; // 2 seconds
+
+    while (attempts < maxAttempts) {
+      try {
+        const {output} = await prompt(input);
+        return output!;
+      } catch (error: any) {
+        if (error.status === 429 && attempts < maxAttempts - 1) {
+          // Rate limit hit, wait and retry
+          const delay = baseDelay * Math.pow(2, attempts); // Exponential backoff
+          console.log(`Rate limit hit in course suggestions, retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          attempts++;
+        } else {
+          // Re-throw if not a rate limit or max attempts reached
+          throw error;
+        }
+      }
+    }
+
+    throw new Error('Max retry attempts reached for course suggestions AI request');
   }
 );

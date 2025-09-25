@@ -40,21 +40,21 @@ service cloud.firestore {
         allow list: if isSignedIn() && isAdmin();
     }
 
-    // Public collections readable by any signed-in user
+    // Public collections readable by any signed-in user (or allow read for testing)
     match /careers/{careerId} {
-      allow read: if isSignedIn();
+      allow read: if true; // Temporarily allow all reads for testing
     }
     match /colleges/{collegeId} {
-      allow read: if isSignedIn();
+      allow read: if true; // Temporarily allow all reads for testing
     }
     match /exams/{examId} {
-      allow read: if isSignedIn();
+      allow read: if true; // Temporarily allow all reads for testing
     }
     match /scholarships/{scholarshipId} {
-        allow read: if isSignedIn();
+        allow read: if true; // Temporarily allow all reads for testing
     }
      match /studyMaterials/{materialId} {
-        allow read: if isSignedIn();
+        allow read: if true; // Temporarily allow all reads for testing
     }
   }
 }

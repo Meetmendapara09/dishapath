@@ -108,7 +108,7 @@ export function SavedRecommendations() {
                         <h3 className="font-semibold flex items-center gap-2 mb-3"><GraduationCap className="h-5 w-5 text-primary" />Recommended Courses</h3>
                         <div className="flex flex-wrap gap-2">
                             {rec.recommendedCourses.map((course) => (
-                            <div key={course} className="bg-primary/10 text-primary-foreground font-medium px-3 py-1 rounded-full text-sm bg-primary">{course}</div>
+                            <div key={course} className="bg-primary/10 text-primary-foreground font-medium px-3 py-1 rounded-full text-sm">{course}</div>
                             ))}
                         </div>
                         </div>

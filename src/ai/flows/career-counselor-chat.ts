@@ -4,7 +4,26 @@
 /**
  * @fileOverview Provides an AI-powered career counselor chatbot.
  *
- * - careerCounselorChat - A function that streams a response from the chatbot.
+ * - careerCounselorChat - A function that  // Serialize messages into a plain string prompt because ai.generateStream expects a string or specific parts, not the message objects used here.
+  const prompt = messages
+    .map((m: any) => {
+      const role =
+        m.role === 'model' ? 'system' : m.role === 'user' ? 'user' : m.role;
+      const content = Array.isArray(m.content)
+        ? m.content.map((c: any) => c.text).join('\n')
+        : String(m.content ?? '');
+      return `${role.toUpperCase()}: ${content}`;
+    })
+    .join('\n\n');
+
+  // Retry logic for rate limits
+  let attempts = 0;
+  const maxAttempts = 3;
+  const baseDelay = 2000; // 2 seconds
+
+  while (attempts < maxAttempts) {
+    try {
+      const streamResponse = await ai.generateStream(prompt);sponse from the chatbot.
  */
 
 import {ai} from '@/ai/genkit';
@@ -122,11 +141,16 @@ const CareerCounselorInputSchema = z.object({
   }).optional(),
 });
 
-const prompt = ai.definePrompt({
-  name: 'careerCounselorPrompt',
-  input: {schema: CareerCounselorInputSchema},
-  tools: [findCareers, findColleges, findExams],
-  prompt: `You are an expert career and education counselor for Indian students who have completed 10th or 12th grade. Your name is 'Lakshya360 AI Assistant'.
+export async function careerCounselorChat(
+  history: z.infer<typeof CareerCounselorInputSchema>['history'],
+  message: string,
+  userProfile?: z.infer<typeof CareerCounselorInputSchema>['userProfile'],
+): Promise<ReadableStream<Uint8Array>> {
+  // Construct the messages array
+  const messages = [];
+
+  // Add system message with context
+  const systemMessage = `You are an expert career and education counselor for Indian students who have completed 10th or 12th grade. Your name is 'Lakshya360 AI Assistant'.
 
   You are having a conversation with a student. Your goal is to provide detailed, helpful, encouraging, and accurate advice. Your responses should be well-structured, easy to read, and use markdown for formatting like lists and bold text.
 
@@ -140,47 +164,77 @@ const prompt = ai.definePrompt({
   - If a question is outside of this scope, politely state that you are focused on career and education counseling.
 
   Here is the student's profile:
-  - Name: {{{userProfile.displayName}}}
-  - Class: {{{userProfile.class}}}
-  - Interests: {{{userProfile.academicInterests}}}
+  - Name: ${userProfile?.displayName || 'Not provided'}
+  - Class: ${userProfile?.class || 'Not provided'}
+  - Interests: ${userProfile?.academicInterests || 'Not provided'}
 
   Based on their profile and the conversation, be proactive:
   - If their interests are not clear, suggest they take the "Aptitude Quiz" on the platform.
   - If they ask about careers for a stream, use the \`findCareers\` tool.
   - If they ask about colleges for a course, use the \`findColleges\` tool.
   - If they ask about exams, use the \`findExams\` tool.
-  - Mention specific pages on the platform like "Explore Careers" or "Find Colleges" when relevant.
+  - Mention specific pages on the platform like "Explore Careers" or "Find Colleges" when relevant.`;
 
-  Here is the conversation history (role 'model' is you, role 'user' is the student):
-  {{#each history}}
-  **{{role}}**: {{#each content}}{{text}}{{/each}}
-  {{/each}}
+  messages.push({ role: 'model', content: [{ text: systemMessage }] });
 
-  Now, here is the new message from the user:
-  {{message}}
+  // Add conversation history
+  for (const h of history) {
+    messages.push({
+      role: h.role === 'model' ? 'model' : 'user',
+      content: h.content
+    });
+  }
 
-  Your response:
-  `,
-});
+  // Add the new user message
+  messages.push({ role: 'user', content: [{ text: message }] });
 
-export async function careerCounselorChat(
-  history: z.infer<typeof CareerCounselorInputSchema>['history'],
-  message: string,
-  userProfile?: z.infer<typeof CareerCounselorInputSchema>['userProfile'],
-): Promise<ReadableStream<Uint8Array>> {
-  const streamResponse = await ai.generateStream(await prompt({history, message, userProfile}));
+  // Serialize messages into a plain string prompt because ai.generateStream expects a string or specific parts, not the message objects used here.
+  const prompt = messages
+    .map((m: any) => {
+      const role =
+        m.role === 'model' ? 'system' : m.role === 'user' ? 'user' : m.role;
+      const content = Array.isArray(m.content)
+        ? m.content.map((c: any) => c.text).join('\n')
+        : String(m.content ?? '');
+      return `${role.toUpperCase()}: ${content}`;
+    })
+    .join('\n\n');
 
-  const encoder = new TextEncoder();
-  const readableStream = new ReadableStream({
-    async start(controller) {
-      for await (const chunk of streamResponse.stream) {
-        if (chunk.text) {
-          controller.enqueue(encoder.encode(chunk.text));
-        }
+  // Retry logic for rate limits
+  let attempts = 0;
+  const maxAttempts = 3;
+  const baseDelay = 2000; // 2 seconds
+
+  while (attempts < maxAttempts) {
+    try {
+      const streamResponse = await ai.generateStream(prompt);
+
+      const encoder = new TextEncoder();
+      const readableStream = new ReadableStream({
+        async start(controller) {
+          for await (const chunk of streamResponse.stream) {
+            if (chunk.text) {
+              controller.enqueue(encoder.encode(chunk.text));
+            }
+          }
+          controller.close();
+        },
+      });
+
+      return readableStream;
+    } catch (error: any) {
+      if (error.status === 429 && attempts < maxAttempts - 1) {
+        // Rate limit hit, wait and retry
+        const delay = baseDelay * Math.pow(2, attempts); // Exponential backoff
+        console.log(`Rate limit hit, retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        attempts++;
+      } else {
+        // Re-throw if not a rate limit or max attempts reached
+        throw error;
       }
-      controller.close();
-    },
-  });
+    }
+  }
 
-  return readableStream;
+  throw new Error('Max retry attempts reached for AI request');
 }

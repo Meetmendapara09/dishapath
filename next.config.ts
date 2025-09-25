@@ -8,6 +8,11 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   /* config options here */
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000', 'localhost:9002', 'https://verbose-acorn-9vwvgr7pj9xf7p75-3000.app.github.dev', 'https://verbose-acorn-9vwvgr7pj9xf7p75-9002.app.github.dev'],
+    },
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
 
 type UserProfile = {
   displayName?: string;
@@ -176,7 +177,11 @@ export function Chat() {
                   : 'bg-background'
               )}
             >
-              <div dangerouslySetInnerHTML={{ __html: message.content.replace(/\n/g, '<br />') }} />
+              {message.role === 'user' ? (
+                <div style={{ whiteSpace: 'pre-wrap' }}>{message.content}</div>
+              ) : (
+                <ReactMarkdown>{message.content}</ReactMarkdown>
+              )}
             </div>
              {message.role === 'user' && (
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
