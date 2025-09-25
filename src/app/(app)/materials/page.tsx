@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, getDocs, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -144,7 +144,7 @@ export default function StudyMaterialsPage() {
         const querySnapshot = await getDocs(collection(db, 'studyMaterials'));
         const fetchedMaterials = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Material));
         
-        let materialsToGroup = fetchedMaterials.length > 0 ? fetchedMaterials : sampleMaterials;
+        const materialsToGroup = fetchedMaterials.length > 0 ? fetchedMaterials : sampleMaterials;
         
         const groupedData = materialsToGroup.reduce((acc: {[key: string]: Material[]}, material: Material) => {
           const { category } = material;
@@ -200,7 +200,7 @@ export default function StudyMaterialsPage() {
          <Card>
           <CardHeader>
             <CardTitle>No Materials Found</CardTitle>
-            <CardDescription>Please add materials to the 'studyMaterials' collection in Firestore or check sample data.</CardDescription>
+            <CardDescription>Please add materials to the &apos;studyMaterials&apos; collection in Firestore or check sample data.</CardDescription>
           </CardHeader>
         </Card>
       ) : (

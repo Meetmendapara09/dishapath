@@ -2,11 +2,11 @@
 // src/app/(app)/dashboard/_components/saved-recs.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { collection, getDocs, deleteDoc, doc, orderBy, query, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, School, Briefcase, GraduationCap, Trash2, Archive } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -26,7 +26,7 @@ export function SavedRecommendations() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  async function fetchRecommendations() {
+  const fetchRecommendations = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
@@ -47,11 +47,11 @@ export function SavedRecommendations() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user, toast]);
 
   useEffect(() => {
     fetchRecommendations();
-  }, [user]);
+  }, [fetchRecommendations]);
 
   async function handleDelete(recommendationId: string) {
     if (!user) return;

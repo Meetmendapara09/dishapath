@@ -167,16 +167,13 @@ export async function careerCounselorChat(
   history: z.infer<typeof CareerCounselorInputSchema>['history'],
   message: string,
   userProfile?: z.infer<typeof CareerCounselorInputSchema>['userProfile'],
-): Promise<ReadableStream<string>> {
-  const {stream, response} = await ai.generateStream({
-    prompt: await prompt({history, message, userProfile}),
-    history,
-  });
+): Promise<ReadableStream<Uint8Array>> {
+  const streamResponse = await ai.generateStream(await prompt({history, message, userProfile}));
 
   const encoder = new TextEncoder();
   const readableStream = new ReadableStream({
     async start(controller) {
-      for await (const chunk of stream) {
+      for await (const chunk of streamResponse.stream) {
         if (chunk.text) {
           controller.enqueue(encoder.encode(chunk.text));
         }

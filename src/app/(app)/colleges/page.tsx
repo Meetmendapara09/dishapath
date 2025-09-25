@@ -7,21 +7,23 @@ import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Home, Library, Microscope, Search, Wifi, Loader2, Sparkles, Bookmark } from 'lucide-react';
+import { Home, Library, Microscope, Wifi, Loader2, Sparkles, Bookmark } from 'lucide-react';
 import { useDebounce } from '@/hooks/use-debounce';
 import { findCollegesFlow, FindCollegesOutput } from '@/ai/flows/find-colleges-flow';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 interface College {
-  id: string;
+  id?: string;
   name: string;
-  courses: string[];
-  facilities: string[];
   medium: string;
+  courses?: string[];
+  facilities?: string[];
+  location?: string;
 }
+
+import { cn } from '@/lib/utils';
 
 const sampleColleges: College[] = [
     // IITs
@@ -159,7 +161,7 @@ export default function CollegesPage() {
     handleSearch(debouncedSearchQuery);
   }, [debouncedSearchQuery, handleSearch]);
   
-  const toggleBookmark = async (collegeId: string, collegeData: any) => {
+  const toggleBookmark = async (collegeId: string, collegeData: College) => {
     if (!user) {
       toast({ variant: 'destructive', title: 'Not logged in', description: 'You must be logged in to bookmark colleges.' });
       return;
@@ -198,7 +200,7 @@ export default function CollegesPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold">Find Nearby Government Colleges</h1>
-        <p className="text-muted-foreground">Use natural language to search for colleges. Try "colleges in Delhi with B.Sc" or "show me colleges with a hostel".</p>
+        <p className="text-muted-foreground">Use natural language to search for colleges. Try &quot;colleges in Delhi with B.Sc&quot; or &quot;show me colleges with a hostel&quot;.</p>
       </div>
 
       <div className="relative">
@@ -237,7 +239,7 @@ export default function CollegesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {collegesToDisplay.map((college) => {
-            const collegeId = (college as any).id || college.name; // Handle both initial and AI search results
+            const collegeId = (college as College).id || college.name; // Handle both initial and AI search results
             const isBookmarked = bookmarkedColleges.includes(collegeId);
             
             return (
@@ -256,7 +258,7 @@ export default function CollegesPage() {
                   <div className="flex-grow">
                     <h4 className="font-semibold mb-2 text-sm">Courses Offered</h4>
                     <div className="flex flex-wrap gap-2">
-                      {college.courses.map((course) => (
+                      {college.courses?.map((course) => (
                         <Badge key={course} variant="secondary">{course}</Badge>
                       ))}
                     </div>
@@ -264,7 +266,7 @@ export default function CollegesPage() {
                   <div>
                     <h4 className="font-semibold mb-2 text-sm mt-4">Facilities</h4>
                     <div className="flex flex-wrap gap-4">
-                      {college.facilities.map((facility) => (
+                      {college.facilities?.map((facility) => (
                         <div key={facility} className="flex items-center gap-2 text-muted-foreground">
                           {facilityIcons[facility] || <div className="h-4 w-4" />}
                           <span className="text-sm">{facility}</span>

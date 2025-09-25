@@ -91,9 +91,9 @@ export function Chat() {
 
     try {
       // Map messages to the format expected by the AI flow
-      const historyForAI = messages.map(m => ({
-        role: m.role as 'user' | 'model' | 'tool',
-        content: [{text: m.content}]
+      const historyForAI: { role: 'user' | 'model' | 'tool'; content: { text: string }[] }[] = messages.map(m => ({
+        role: m.role === 'assistant' ? ('model' as const) : (m.role as 'user' | 'tool'),
+        content: [{ text: m.content }]
       }));
 
       const stream = await careerCounselorChat(
@@ -150,8 +150,8 @@ export function Chat() {
             <p className="text-lg font-semibold">Welcome to the AI Counselor!</p>
             <p>Your conversations will be saved automatically.</p>
             <ul className="mt-2 text-sm list-disc list-inside">
-              <li>"What are the career options after 12th science?"</li>
-              <li>"Tell me about the CUET exam."</li>
+              <li>&quot;What are the career options after 12th science?&quot;</li>
+              <li>&quot;Tell me about the CUET exam.&quot;</li>
             </ul>
           </div>
         )}
